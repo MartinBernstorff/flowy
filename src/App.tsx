@@ -1,7 +1,7 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useMemo } from 'react';
 import {
-    ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, useNodesState,
-    useEdgesState, Node, Edge, NodeChange, EdgeChange, Connection, OnConnectEnd
+  ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, useNodesState,
+  useEdgesState, Node, Edge, NodeChange, EdgeChange, Connection, OnConnectEnd
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
@@ -11,6 +11,7 @@ import CustomNode from './CustomNode';
 
 interface CustomNodeData extends Record<string, unknown> {
   label: string;
+  onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
 }
 
 const initialNodes: Node<CustomNodeData>[] = [
@@ -106,6 +107,27 @@ function Flow() {
     });
   }, [setNodes, setEdges]);
 
+  const handleAddNode = useCallback((nodeId: string, direction: 'before' | 'after') => {
+    const newNodeId = nextId();
+    const newNode: Node<CustomNodeData> = {
+      id: newNodeId,
+      position: { x: 0, y: 0 },
+      data: { label: `Node ${newNodeId}` },
+      type: 'custom',
+    };
+
+    const newEdge = {
+      id: direction === 'after' ? `${nodeId}-${newNodeId}` : `${newNodeId}-${nodeId}`,
+      source: direction === 'after' ? nodeId : newNodeId,
+      target: direction === 'after' ? newNodeId : nodeId,
+      markerEnd: { type: MarkerType.Arrow },
+    };
+
+    const updatedNodes = [...nodes, newNode];
+    const updatedEdges = [...edges, newEdge];
+    updateLayout(updatedNodes, updatedEdges);
+  }, [nodes, edges, updateLayout]);
+
   const onNodesChange = useCallback(
     (changes: NodeChange<Node<CustomNodeData>>[]) => {
       const updatedNodes = applyNodeChanges(changes, nodes);
@@ -165,10 +187,20 @@ function Flow() {
     [edges, nodes, updateLayout],
   );
 
+  const nodesWithCallbacks = useMemo(() => {
+    return nodes.map(node => ({
+      ...node,
+      data: {
+        ...node.data,
+        onAddNode: handleAddNode,
+      },
+    }));
+  }, [nodes, handleAddNode]);
+
   return (
     <div ref={reactFlowWrapper} style={{ width: '100vw', height: '100vh' }}>
       <ReactFlow
-        nodes={nodes}
+        nodes={nodesWithCallbacks}
         nodeTypes={nodeTypes}
         edges={edges}
         onNodesChange={onNodesChange}
