@@ -15,22 +15,23 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
   const isTarget = connection.inProgress && connection.fromNode.id !== id;
 
   return (
-    <div className="customNode">
-      <div
-        className="customNodeBody"
-      >
-        {/* If handles are conditionally rendered and not present initially, you need to update the node internals https://reactflow.dev/docs/api/hooks/use-update-node-internals/ */}
-        {/* In this case we don't need to use useUpdateNodeInternals, since !isConnecting is true at the beginning and all handles are rendered initially. */}
+    <div className="px-4 py-2 shadow-sm rounded-sm bg-white border border-black relative">
+      <div className="flex items-center justify-center">
+        {/* Target handle covers the full node */}
+        {(!connection.inProgress || isTarget) && (
+          <Handle 
+            className="w-full! h-full! absolute! top-0! left-0! transform-none! border-none! rounded-none! opacity-0!" 
+            position={Position.Top} 
+            type="target" 
+            isConnectableStart={false} 
+          />
+        )}
         {!connection.inProgress && (
           <Handle
-            className="customHandle"
+            className="w-2! h-2! bg-gray-400!"
             position={Position.Bottom}
             type="source"
           />
-        )}
-        {/* We want to disable the target handle, if the connection was started from this node */}
-        {(!connection.inProgress || isTarget) && (
-          <Handle className="customHandle" position={Position.Top} type="target" isConnectableStart={false} />
         )}
         {data.label}
       </div>
