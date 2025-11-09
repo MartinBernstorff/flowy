@@ -1,6 +1,15 @@
 import { Handle, Position, useConnection } from '@xyflow/react';
 
-export default function CustomNode({ id, data }) {
+interface CustomNodeData extends Record<string, unknown> {
+  label: string;
+}
+
+interface CustomNodeProps {
+  id: string;
+  data: CustomNodeData;
+}
+
+export default function CustomNode({ id, data }: CustomNodeProps) {
   const connection = useConnection();
 
   const isTarget = connection.inProgress && connection.fromNode.id !== id;
@@ -16,6 +25,7 @@ export default function CustomNode({ id, data }) {
           <Handle
             className="customHandle"
             position={Position.Bottom}
+            type="source"
           />
         )}
         {/* We want to disable the target handle, if the connection was started from this node */}
