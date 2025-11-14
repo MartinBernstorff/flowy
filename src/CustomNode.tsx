@@ -109,43 +109,45 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
     return (
         <div
             ref={nodeRef}
-            className={`px-4 py-2 shadow-sm rounded-sm border ${isHovered ? 'border-black bg-gray-200' : 'border-gray-300 bg-white'} relative`}
+            className={`w-32 h-24 shadow-sm rounded-sm border ${isHovered ? 'border-black bg-gray-200' : 'border-gray-300 bg-white'} relative flex items-center justify-center p-2`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleClick}
         >
-            <div className="flex items-center justify-center">
-                {/* Target handle covers the full node */}
-                {(!connection.inProgress || isTarget) && (
-                    <Handle
-                        className="w-full! h-full! absolute! top-0! left-0! transform-none! border-none! rounded-none! opacity-0!"
-                        position={Position.Top}
-                        type="target"
-                        isConnectableStart={false}
-                    />
-                )}
-                {!connection.inProgress && (
-                    <Handle
-                        className="w-2! h-2! bg-gray-400!"
-                        position={Position.Bottom}
-                        type="source"
-                    />
-                )}
-                {isEditing ? (
-                    <input
-                        ref={inputRef}
-                        type="text"
-                        value={editedLabel}
-                        onChange={(e) => setEditedLabel(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        onBlur={handleBlur}
-                        className="border-none outline-none bg-transparent text-center px-1 text-black"
-                        style={{ width: `${Math.max(50, editedLabel.length * 8)}px` }}
-                    />
-                ) : (
-                    <span className={`text-black ${isHovered ? 'border-gray-300' : ''}`}>{data.label}</span>
-                )}
-            </div>
+            {/* Target handle covers the full node */}
+            {(!connection.inProgress || isTarget) && (
+                <Handle
+                    className="w-full! h-full! absolute! top-0! left-0! transform-none! border-none! rounded-none! opacity-0!"
+                    position={Position.Top}
+                    type="target"
+                    isConnectableStart={false}
+                />
+            )}
+            {!connection.inProgress && (
+                <Handle
+                    className="w-2! h-2! bg-gray-400!"
+                    position={Position.Bottom}
+                    type="source"
+                />
+            )}
+            {isEditing ? (
+                <textarea
+                    ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+                    value={editedLabel}
+                    onChange={(e) => setEditedLabel(e.target.value)}
+                    onKeyDown={handleKeyDown as any}
+                    onBlur={handleBlur}
+                    className="border-none outline-none bg-transparent text-center w-full h-full resize-none text-black overflow-hidden"
+                    style={{ fontSize: 'clamp(0.5rem, 2vw, 0.875rem)' }}
+                />
+            ) : (
+                <span
+                    className={`text-black text-center break-words w-full ${isHovered ? 'border-gray-300' : ''}`}
+                    style={{ fontSize: 'clamp(0.5rem, 2vw, 0.875rem)', lineHeight: '1.2' }}
+                >
+                    {data.label}
+                </span>
+            )}
         </div>
     );
 }

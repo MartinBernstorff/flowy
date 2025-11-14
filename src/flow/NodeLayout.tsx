@@ -6,7 +6,6 @@ import CustomNode from '../CustomNode';
 export const elk = new ELK();
 
 export async function getLayoutedElements(nodes: Node<RenderedNodeData>[], edges: Edge[]): Promise<{ nodes: Node<RenderedNodeData>[]; edges: Edge[]; }> {
-  const isHorizontal = elkOptions?.['elk.direction'] === 'RIGHT';
   const nodeIds = new Set(nodes.map(node => node.id));
 
   // Filter out edges that don't have both valid source and target nodes
@@ -18,14 +17,9 @@ export async function getLayoutedElements(nodes: Node<RenderedNodeData>[], edges
     layoutOptions: elkOptions,
     children: nodes.map((node) => ({
       ...node,
-      // Adjust the target and source handle positions based on the layout
-      // direction.
-      targetPosition: isHorizontal ? 'left' : 'top',
-      sourcePosition: isHorizontal ? 'right' : 'bottom',
-
       // Hardcode a width and height for elk to use when layouting.
       width: 150,
-      height: 50,
+      height: 100,
     })),
     edges: validEdges.map(edge => ({
       id: edge.id,
