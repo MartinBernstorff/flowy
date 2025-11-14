@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import {
-  ReactFlow, Background, Node, Edge, Connection, OnConnectEnd
+  ReactFlow, Background, Node, Edge, Connection, OnConnectEnd,
+  useReactFlow, applyEdgeChanges, EdgeChange
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
@@ -10,6 +11,7 @@ import { CustomNodeId, nodeCollection } from './persistence/NodeCollection';
 
 export interface RenderedNodeData extends Record<string, unknown> {
   label: string;
+  isNew?: boolean;
   onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
 }
 
@@ -17,6 +19,8 @@ function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
   const rawData = useLiveQuery((q) => q.from({ nodes: nodeCollection })).data;
+
+  const { fitView } = useReactFlow();
 
   if (rawData.length === 0) {
     // Initialize with some nodes
@@ -29,7 +33,7 @@ function Flow() {
   const nodeData: Node<RenderedNodeData>[] = rawData.map((node): Node<RenderedNodeData> => ({
     id: node.id,
     position: { x: 0, y: 0 }, // Initial position is 0, so the layout algorithm can position it
-    data: { label: node.label },
+    data: { label: node.label, isNew: node.isNew },
     type: 'custom',
   }));
 
@@ -62,6 +66,7 @@ function Flow() {
           id: newNodeId,
           label: newNodeLabel(newNodeId),
           parents: [],
+          isNew: true,
         });
 
         // Update the existing node to add the new node as a parent
@@ -72,6 +77,7 @@ function Flow() {
           id: newNodeId,
           label: newNodeLabel(newNodeId),
           parents: [target],
+          isNew: true,
         });
         break;
     }
@@ -94,9 +100,24 @@ function Flow() {
           id: newNodeId,
           label: newNodeLabel(newNodeId),
           parents: [connectionState.fromNode.id as CustomNodeId],
+          isNew: true,
         });
       }
     }
+
+  const onEdgesChange = (changes: EdgeChange[]) => {
+    changes.forEach(change => {
+      if (change.type === 'remove') {
+        const edgeToRemove = edges.find(e => e.id === change.id);
+        if (edgeToRemove) {
+          nodeCollection.update(edgeToRemove.target as CustomNodeId, (node) => {
+            node.parents = node.parents.filter(parentId => parentId !== edgeToRemove.source);
+          });
+        }
+      }
+    });
+    setEdges((eds) => applyEdgeChanges(changes, eds));
+  }
 
   const nodesWithCallbacks = nodes.map(node => ({
     ...node,
@@ -106,6 +127,8 @@ function Flow() {
     },
   }))
 
+  fitView();
+
   return (
     <div ref={reactFlowWrapper} style={{ width: '100vw', height: '100vh' }}>
       <ReactFlow
@@ -114,6 +137,7 @@ function Flow() {
         edges={edges}
         onConnect={onConnect}
         onConnectEnd={onConnectEnd}
+        onEdgesChange={onEdgesChange}
         fitView
       >
         <Background />

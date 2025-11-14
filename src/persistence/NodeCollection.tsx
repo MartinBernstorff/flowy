@@ -32,7 +32,8 @@ const customNodeRxdbSchema = {
   properties: {
     id: { type: "string", maxLength: 100 },
     label: { type: "string" },
-    parents: { type: "array", items: { type: "string" } }
+    parents: { type: "array", items: { type: "string" } },
+    isNew: { type: "boolean" }
   },
   required: ["id", "label", "parents"]
 };
@@ -50,6 +51,7 @@ const CustomNodeSchema = z.object({
     id: CustomNodeId,
     label: z.string(),
     parents: z.array(CustomNodeId),
+    isNew: z.boolean().optional(),
 });
 export type CustomNode = z.infer<typeof CustomNodeSchema>;
 

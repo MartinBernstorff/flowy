@@ -4,6 +4,7 @@ import { nodeCollection } from './persistence/NodeCollection';
 
 interface CustomNodeData extends Record<string, unknown> {
     label: string;
+    isNew?: boolean;
     onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
 }
 
@@ -15,12 +16,20 @@ interface CustomNodeProps {
 export default function CustomNode({ id, data }: CustomNodeProps) {
     const connection = useConnection();
     const [isHovered, setIsHovered] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditing, setIsEditing] = useState(data.isNew || false);
     const [editedLabel, setEditedLabel] = useState(data.label);
     const nodeRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const isTarget = connection.inProgress && connection.fromNode.id !== id;
+
+    // Auto-enter edit mode for new nodes
+    useEffect(() => {
+        if (data.isNew) {
+            setIsEditing(true);
+            setIsHovered(false);
+        }
+    }, [data.isNew]);
 
     useEffect(() => {
         if (isEditing && inputRef.current) {
@@ -36,19 +45,33 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            nodeCollection.update(id, (node) => { node.label = editedLabel });
-            setIsEditing(false);
-        } else if (event.key === 'Escape') {
-            event.preventDefault();
-            setIsEditing(false);
-            setEditedLabel(data.label);
+        switch (event.key) {
+            case 'Enter':
+                event.preventDefault();
+                nodeCollection.update(id, (node) => {
+                    node.label = editedLabel;
+                    node.isNew = false;
+                });
+                setIsEditing(false);
+                break;
+            case 'Escape':
+                event.preventDefault();
+                setIsEditing(false);
+                setEditedLabel(data.label);
+                if (data.isNew) {
+                    nodeCollection.update(id, (node) => {
+                        node.isNew = false;
+                    });
+                }
+                break;
         }
     };
 
     const handleBlur = () => {
-        nodeCollection.update(id, (node) => { node.label = editedLabel });
+        nodeCollection.update(id, (node) => {
+            node.label = editedLabel;
+            node.isNew = false;
+        });
         setIsEditing(false);
     };
 
@@ -70,6 +93,11 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                     break;
                 case 'd':
                     nodeCollection.delete(id);
+                    break;
+                case 'e':
+                    event.preventDefault();
+                    setIsEditing(true);
+                    setIsHovered(false);
                     break;
             }
         };
