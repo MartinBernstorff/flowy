@@ -12,11 +12,15 @@
   "dependencies": {
     "@dagrejs/dagre": "^1.1.8",
     "@tailwindcss/vite": "^4.1.17",
+    "@tanstack/react-db": "^0.1.44",
+    "@tanstack/rxdb-db-collection": "^0.1.32",
     "@xyflow/react": "^12.9.2",
     "elkjs": "^0.11.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.17"
+    "rxdb": "^16.20.0",
+    "tailwindcss": "^4.1.17",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

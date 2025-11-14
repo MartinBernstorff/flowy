@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Handle, Position, useConnection, useReactFlow } from '@xyflow/react';
+import { Handle, Position, useConnection } from '@xyflow/react';
+import { nodeCollection } from './persistence/NodeCollection';
 
 interface CustomNodeData extends Record<string, unknown> {
     label: string;
@@ -13,15 +14,48 @@ interface CustomNodeProps {
 
 export default function CustomNode({ id, data }: CustomNodeProps) {
     const connection = useConnection();
-    const { deleteElements } = useReactFlow();
     const [isHovered, setIsHovered] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedLabel, setEditedLabel] = useState(data.label);
     const nodeRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const isTarget = connection.inProgress && connection.fromNode.id !== id;
 
     useEffect(() => {
+        if (isEditing && inputRef.current) {
+            inputRef.current.focus();
+            inputRef.current.select();
+        }
+    }, [isEditing]);
+
+    const handleClick = () => {
+        setIsHovered(false);
+        setIsEditing(true);
+        setEditedLabel(data.label);
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            nodeCollection.update(id, (node) => { node.label = editedLabel });
+            setIsEditing(false);
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            setIsEditing(false);
+            setEditedLabel(data.label);
+        }
+    };
+
+    const handleBlur = () => {
+        nodeCollection.update(id, (node) => { node.label = editedLabel });
+        setIsEditing(false);
+    };
+
+    useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (!isHovered) return;
+            if (isEditing) return;
 
             const key = event.key.toLowerCase();
 
@@ -35,21 +69,22 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                     data.onAddNode(id, direction);
                     break;
                 case 'd':
-                    deleteElements({ nodes: [{ id }] });
+                    nodeCollection.delete(id);
                     break;
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isHovered, id, data, deleteElements]);
+    }, [isHovered, id, data]);
 
     return (
         <div
             ref={nodeRef}
-            className="px-4 py-2 shadow-sm rounded-sm bg-white border border-black relative"
+            className={`px-4 py-2 shadow-sm rounded-sm border ${isHovered ? 'border-black bg-gray-200' : 'border-gray-300 bg-white'} relative`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={handleClick}
         >
             <div className="flex items-center justify-center">
                 {/* Target handle covers the full node */}
@@ -68,7 +103,20 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                         type="source"
                     />
                 )}
-                {data.label}
+                {isEditing ? (
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        value={editedLabel}
+                        onChange={(e) => setEditedLabel(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        onBlur={handleBlur}
+                        className="border-none outline-none bg-transparent text-center px-1 text-black"
+                        style={{ width: `${Math.max(50, editedLabel.length * 8)}px` }}
+                    />
+                ) : (
+                    <span className={`text-black ${isHovered ? 'border-gray-300' : ''}`}>{data.label}</span>
+                )}
             </div>
         </div>
     );

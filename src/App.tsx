@@ -1,201 +1,110 @@
-import { useCallback, useRef, useMemo } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import {
-  ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, useNodesState,
-  useEdgesState, Node, Edge, NodeChange, EdgeChange, Connection, OnConnectEnd
+  ReactFlow, Background, Node, Edge, Connection, OnConnectEnd
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
-import ELK from 'elkjs/lib/elk.bundled.js';
-import { MarkerType } from '@xyflow/react';
-import CustomNode from './CustomNode';
+import { useLiveQuery } from '@tanstack/react-db';
+import { getLayoutedElements, nodeTypes } from './flow/NodeLayout';
+import { CustomNodeId, nodeCollection } from './persistence/NodeCollection';
 
-interface CustomNodeData extends Record<string, unknown> {
+export interface RenderedNodeData extends Record<string, unknown> {
   label: string;
   onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
-}
-
-const initialNodes: Node<CustomNodeData>[] = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node 1' }, type: 'custom' },
-];
-const initialEdges: Edge[] = [];
-
-let id = 3;
-const nextId = () => `${id++}`;
-
-const elk = new ELK();
-
-const nodeTypes = {
-  custom: CustomNode,
-};
-
-const elkOptions: Record<string, string> = {
-  "elk.algorithm": "layered",
-  "elk.direction": "DOWN",
-  "elk.spacing.nodeNode": "25",
-  "elk.layered.spacing.nodeNodeBetweenLayers": "50",
-  "elk.layered.spacing": "50",
-  "elk.layered.mergeEdges": "true",
-  "elk.spacing": "50",
-  "elk.spacing.individual": "50",
-  "elk.edgeRouting": "SPLINES"
-};
-
-function getLayoutedElements(
-  nodes: Node<CustomNodeData>[], 
-  edges: Edge[], 
-  options: Record<string, string>
-): Promise<{ nodes: Node<CustomNodeData>[]; edges: Edge[] } | undefined> {
-  const isHorizontal = options?.['elk.direction'] === 'RIGHT';
-  const nodeIds = new Set(nodes.map(node => node.id));
-  
-  // Filter out edges that don't have both valid source and target nodes
-  const validEdges = edges.filter(edge => 
-    nodeIds.has(edge.source) && nodeIds.has(edge.target)
-  );
-  
-  const graph = {
-    id: 'root',
-    layoutOptions: options,
-    children: nodes.map((node) => ({
-      ...node,
-      // Adjust the target and source handle positions based on the layout
-      // direction.
-      targetPosition: isHorizontal ? 'left' : 'top',
-      sourcePosition: isHorizontal ? 'right' : 'bottom',
-
-      // Hardcode a width and height for elk to use when layouting.
-      width: 150,
-      height: 50,
-    })),
-    edges: validEdges.map(edge => ({
-      id: edge.id,
-      sources: [edge.source],
-      targets: [edge.target],
-    }))
-  };
-
-  return elk
-    .layout(graph)
-    .then((layoutedGraph) => ({
-      nodes: (layoutedGraph.children || []).map((node) => ({
-        ...node,
-        // React Flow expects a position property on the node instead of `x`
-        // and `y` fields.
-        position: { x: node.x || 0, y: node.y || 0 },
-      })) as Node<CustomNodeData>[],
-
-      edges: validEdges,
-    }))
-    .catch((error) => {
-      console.error(error);
-      return undefined;
-    });
 }
 
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
-  const [nodes, setNodes] = useNodesState<Node<CustomNodeData>>(initialNodes);
-  const [edges, setEdges] = useEdgesState(initialEdges);
+  const rawData = useLiveQuery((q) => q.from({ nodes: nodeCollection })).data;
 
-  const updateLayout = useCallback((nodes: Node<CustomNodeData>[], edges: Edge[]) => {
-    getLayoutedElements(nodes, edges, elkOptions).then((layouted) => {
-      if (layouted) {
-        setNodes(layouted.nodes);
-        setEdges(layouted.edges);
-      }
+  if (rawData.length === 0) {
+    // Initialize with some nodes
+    nodeCollection.insert([
+      { id: '1' as CustomNodeId, label: 'Node 1', parents: [] },
+    ]);
+    return null; // Will re-render on next tick
+  }
+
+  const nodeData: Node<RenderedNodeData>[] = rawData.map((node): Node<RenderedNodeData> => ({
+    id: node.id,
+    position: { x: 0, y: 0 }, // Initial position is 0, so the layout algorithm can position it
+    data: { label: node.label },
+    type: 'custom',
+  }));
+
+  const edgeData: Edge[] = rawData.flatMap(it =>
+    it.parents.map(parentId => ({
+      id: `${parentId}-${it.id}`,
+      source: parentId,
+      target: it.id,
+    }))
+  );
+
+  const [nodes, setNodes] = useState<Node<RenderedNodeData>[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+
+  useEffect(() => {
+    getLayoutedElements(nodeData, edgeData).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
+      setNodes(layoutedNodes);
+      setEdges(layoutedEdges);
     });
-  }, [setNodes, setEdges]);
+  }, [rawData]);
 
-  const handleAddNode = useCallback((nodeId: string, direction: 'before' | 'after') => {
-    const newNodeId = nextId();
-    const newNode: Node<CustomNodeData> = {
-      id: newNodeId,
-      position: { x: 0, y: 0 },
-      data: { label: `Node ${newNodeId}` },
-      type: 'custom',
-    };
+  const newNodeLabel = (input: CustomNodeId) => `Node ${input.slice(0, 4)}`;
 
-    const newEdge = {
-      id: direction === 'after' ? `${nodeId}-${newNodeId}` : `${newNodeId}-${nodeId}`,
-      source: direction === 'after' ? nodeId : newNodeId,
-      target: direction === 'after' ? newNodeId : nodeId,
-      markerEnd: { type: MarkerType.Arrow },
-    };
+  const handleAddNode = (target: CustomNodeId, direction: 'before' | 'after') => {
+    const newNodeId = crypto.randomUUID() as CustomNodeId;
 
-    const updatedNodes = [...nodes, newNode];
-    const updatedEdges = [...edges, newEdge];
-    updateLayout(updatedNodes, updatedEdges);
-  }, [nodes, edges, updateLayout]);
+    switch (direction) {
+      case 'before':
+        nodeCollection.insert({
+          id: newNodeId,
+          label: newNodeLabel(newNodeId),
+          parents: [],
+        });
 
-  const onNodesChange = useCallback(
-    (changes: NodeChange<Node<CustomNodeData>>[]) => {
-      const updatedNodes = applyNodeChanges(changes, nodes);
-      updateLayout(updatedNodes, edges);
-    },
-    [nodes, updateLayout, edges],
-  );
-  
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) => {
-      const updatedEdges = applyEdgeChanges(changes, edges);
-      updateLayout(nodes, updatedEdges);
-      console.log('edges changed')
-    },
-    [edges, nodes, updateLayout],
-  );
-  
-  const onConnect = useCallback(
+        // Update the existing node to add the new node as a parent
+        nodeCollection.update(target, (node) => { node.parents = [newNodeId, ...node.parents] });
+        break;
+      case 'after':
+        nodeCollection.insert({
+          id: newNodeId,
+          label: newNodeLabel(newNodeId),
+          parents: [target],
+        });
+        break;
+    }
+  }
+
+  const onConnect =
     (params: Connection) => {
-      const updatedEdges = addEdge(params, edges);
-      updateLayout(nodes, updatedEdges);
-    },
-    [edges, nodes, updateLayout],
-  );
+      nodeCollection.update(params.target as CustomNodeId, (node) => {
+        node.parents = Array.from(new Set([...node.parents, params.source as CustomNodeId]));
+      })
+    }
 
-  const onConnectEnd: OnConnectEnd = useCallback(
+  const onConnectEnd: OnConnectEnd =
     (_event, connectionState) => {
       // when a connection is dropped on the pane it's not valid
       if (!connectionState.isValid && connectionState.fromNode) {
-        // we need to remove the wrapper bounds, in order to get the correct position
-        const newId = nextId();
+        const newNodeId = crypto.randomUUID() as CustomNodeId;
 
-        const newNode: Node<CustomNodeData> = {
-          id: newId,
-          position: { x: 0, y: 0 },
-          data: { label: `Node ${newId}` },
-          type: 'custom',
-        };
-
-        const updatedEdges = addEdge(
-          {
-            id: newId, 
-            source: connectionState.fromNode.id, 
-            target: newId, 
-            markerEnd: {
-              type: MarkerType.Arrow,
-            },
-          },
-          edges
-        );
-
-        const updatedNodes = nodes.concat(newNode);
-
-        updateLayout(updatedNodes, updatedEdges);
+        nodeCollection.insert({
+          id: newNodeId,
+          label: newNodeLabel(newNodeId),
+          parents: [connectionState.fromNode.id as CustomNodeId],
+        });
       }
-    },
-    [edges, nodes, updateLayout],
-  );
+    }
 
-  const nodesWithCallbacks = useMemo(() => {
-    return nodes.map(node => ({
-      ...node,
-      data: {
-        ...node.data,
-        onAddNode: handleAddNode,
-      },
-    }));
-  }, [nodes, handleAddNode]);
+  const nodesWithCallbacks = nodes.map(node => ({
+    ...node,
+    data: {
+      ...node.data,
+      onAddNode: handleAddNode,
+    },
+  }))
 
   return (
     <div ref={reactFlowWrapper} style={{ width: '100vw', height: '100vh' }}>
@@ -203,8 +112,6 @@ function Flow() {
         nodes={nodesWithCallbacks}
         nodeTypes={nodeTypes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onConnectEnd={onConnectEnd}
         fitView
