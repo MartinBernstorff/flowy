@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import {
   ReactFlow, Background, Node, Edge, Connection, OnConnectEnd,
   useReactFlow, applyEdgeChanges, EdgeChange
@@ -19,39 +19,49 @@ export interface RenderedNodeData extends Record<string, unknown> {
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const selectTriggerRef = useRef<HTMLButtonElement>(null);
-  const [graph, setGraph] = useState('default' as GraphId);
+
+  // Initialize graph from URL or default to 'default'
+  const [graph, setGraph] = useState<GraphId>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const graphParam = params.get('graph');
+    return (graphParam as GraphId) || ('default' as GraphId);
+  });
 
   const rawData = useLiveQuery((q) => q.from({ nodes: nodeCollection })).data;
-  const allGraphs = Array.from(new Set(rawData.map(it => it.graph)));
-  const graphOptions = [...allGraphs];
+  const allGraphs = useMemo(() => Array.from(new Set(rawData.map(it => it.graph))), [rawData]);
+  const graphOptions = useMemo(() => [...allGraphs], [allGraphs]);
+
+  // Sync graph state to URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('graph', graph);
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({}, '', newUrl);
+  }, [graph]);
 
   // Filter nodes by selected graph
-  const filteredRawData = rawData.filter(node => node.graph === graph);
+  const filteredRawData = useMemo(() => rawData.filter(node => node.graph === graph), [rawData, graph]);
 
   const { fitView } = useReactFlow();
 
-  if (filteredRawData.length === 0) {
-    // Initialize with some nodes
-    nodeCollection.insert([
-      { id: '1' as CustomNodeId, label: 'Node 1', parents: [], graph: 'default' },
-    ]);
-    return null; // Will re-render on next tick
-  }
-
-  const nodeData: Node<RenderedNodeData>[] = filteredRawData.map((node): Node<RenderedNodeData> => ({
-    id: node.id,
-    position: { x: 0, y: 0 }, // Initial position is 0, so the layout algorithm can position it
-    data: { label: node.label, isNew: node.isNew },
-    type: 'custom',
-  }));
-
-  const edgeData: Edge[] = filteredRawData.flatMap(it =>
-    it.parents.map(parentId => ({
-      id: `${parentId}-${it.id}`,
-      source: parentId,
-      target: it.id,
+  const nodeData: Node<RenderedNodeData>[] = useMemo(() =>
+    filteredRawData.map((node): Node<RenderedNodeData> => ({
+      id: node.id,
+      position: { x: 0, y: 0 }, // Initial position is 0, so the layout algorithm can position it
+      data: { label: node.label, isNew: node.isNew },
+      type: 'custom',
     }))
-  );
+    , [filteredRawData]);
+
+  const edgeData: Edge[] = useMemo(() =>
+    filteredRawData.flatMap(it =>
+      it.parents.map(parentId => ({
+        id: `${parentId}-${it.id}`,
+        source: parentId,
+        target: it.id,
+      }))
+    )
+    , [filteredRawData]);
 
   const [nodes, setNodes] = useState<Node<RenderedNodeData>[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -60,8 +70,10 @@ function Flow() {
     getLayoutedElements(nodeData, edgeData).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
       setNodes(layoutedNodes);
       setEdges(layoutedEdges);
+      // Fit view after layout is applied
+      setTimeout(() => fitView(), 0);
     });
-  }, [filteredRawData]);
+  }, [nodeData, edgeData, fitView]);
 
   // Keyboard shortcut handler for Cmd+K
   useEffect(() => {
@@ -167,8 +179,6 @@ function Flow() {
       setGraph(value as GraphId);
     }
   }
-
-  fitView();
 
   return (
     <div ref={reactFlowWrapper} style={{ width: '100vw', height: '100vh', position: 'relative' }}>
