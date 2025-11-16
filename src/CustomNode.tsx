@@ -6,6 +6,7 @@ interface CustomNodeData extends Record<string, unknown> {
     label: string;
     isNew?: boolean;
     onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
+    onDeleteNode?: (nodeId: string) => void;
 }
 
 interface CustomNodeProps {
@@ -44,7 +45,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
         setEditedLabel(data.label);
     };
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         switch (event.key) {
             case 'Enter':
                 event.preventDefault();
@@ -92,7 +93,11 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                     data.onAddNode(id, direction);
                     break;
                 case 'd':
-                    nodeCollection.delete(id);
+                    if (data.onDeleteNode) {
+                        data.onDeleteNode(id);
+                    } else {
+                        nodeCollection.delete(id);
+                    }
                     break;
                 case 'e':
                     event.preventDefault();
@@ -105,6 +110,8 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isHovered, id, data]);
+
+    const fieldClasses = "border-none outline-none bg-transparent text-center wrap-break-word w-full h-full resize-none text-black overflow-hidden text-sm";
 
     return (
         <div
@@ -132,18 +139,16 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
             )}
             {isEditing ? (
                 <textarea
-                    ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+                    ref={inputRef as unknown as React.RefObject<HTMLTextAreaElement>}
                     value={editedLabel}
                     onChange={(e) => setEditedLabel(e.target.value)}
-                    onKeyDown={handleKeyDown as any}
+                    onKeyDown={handleKeyDown}
                     onBlur={handleBlur}
-                    className="border-none outline-none bg-transparent text-center w-full h-full resize-none text-black overflow-hidden"
-                    style={{ fontSize: 'clamp(0.5rem, 2vw, 0.875rem)' }}
+                    className={fieldClasses}
                 />
             ) : (
                 <span
-                    className={`text-black text-center break-words w-full ${isHovered ? 'border-gray-300' : ''}`}
-                    style={{ fontSize: 'clamp(0.5rem, 2vw, 0.875rem)', lineHeight: '1.2' }}
+                    className={fieldClasses}
                 >
                     {data.label}
                 </span>

@@ -1,12 +1,13 @@
-import { useRef, useEffect, useState, useMemo } from 'react';
+import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import {
   ReactFlow, Background, Node, Edge, Connection, OnConnectEnd,
-  useReactFlow, applyEdgeChanges, EdgeChange
+  useReactFlow, applyEdgeChanges, EdgeChange,
+  reconnectEdge
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useLiveQuery } from '@tanstack/react-db';
-import { getLayoutedElements, nodeTypes } from './flow/NodeLayout';
+import { getLayoutedElements, nodeTypes, edgeTypes } from './flow/NodeLayout';
 import { CustomNodeId, GraphId, nodeCollection } from './persistence/NodeCollection';
 import { GraphSelector } from '@/components/GraphSelector';
 
@@ -27,10 +28,6 @@ function Flow() {
     return (graphParam as GraphId) || ('default' as GraphId);
   });
 
-  const rawData = useLiveQuery((q) => q.from({ nodes: nodeCollection })).data;
-  const allGraphs = useMemo(() => Array.from(new Set(rawData.map(it => it.graph))), [rawData]);
-  const graphOptions = useMemo(() => [...allGraphs], [allGraphs]);
-
   // Sync graph state to URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -39,10 +36,11 @@ function Flow() {
     window.history.replaceState({}, '', newUrl);
   }, [graph]);
 
-  // Filter nodes by selected graph
-  const filteredRawData = useMemo(() => rawData.filter(node => node.graph === graph), [rawData, graph]);
-
   const { fitView } = useReactFlow();
+
+  const rawData = useLiveQuery((q) => q.from({ nodes: nodeCollection })).data;
+  const allGraphs = Array.from(new Set(rawData.map(it => it.graph)));
+  const filteredRawData = useMemo(() => rawData.filter(node => node.graph === graph), [rawData, graph]);
 
   const nodeData: Node<RenderedNodeData>[] = useMemo(() =>
     filteredRawData.map((node): Node<RenderedNodeData> => ({
@@ -65,6 +63,12 @@ function Flow() {
 
   const [nodes, setNodes] = useState<Node<RenderedNodeData>[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
+
+  const onReconnect = useCallback(
+    (oldEdge: Edge, newConnection: Connection) =>
+      setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
+    [],
+  );
 
   useEffect(() => {
     getLayoutedElements(nodeData, edgeData).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
@@ -118,6 +122,53 @@ function Flow() {
     }
   }
 
+  const handleInsertNode = (sourceId: CustomNodeId, targetId: CustomNodeId) => {
+    const newNodeId = crypto.randomUUID() as CustomNodeId;
+
+    // Create the new node with the source as its parent
+    nodeCollection.insert({
+      id: newNodeId,
+      label: newNodeLabel(newNodeId),
+      parents: [sourceId],
+      isNew: true,
+      graph: graph
+    });
+
+    // Update the target to replace the source with the new node
+    nodeCollection.update(targetId, (node) => {
+      node.parents = node.parents.map(parentId =>
+        parentId === sourceId ? newNodeId : parentId
+      );
+    });
+  }
+
+  const handleDeleteNode = (nodeId: CustomNodeId) => {
+    const nodeToDelete = filteredRawData.find(n => n.id === nodeId);
+    if (!nodeToDelete) return;
+
+    const parents = nodeToDelete.parents;
+    const children = filteredRawData.filter(n => n.parents.includes(nodeId));
+
+    // If the node has both parents and children, link parents to all children
+    if (parents.length > 0 && children.length > 0) {
+      children.forEach(child => {
+        nodeCollection.update(child.id, (node) => {
+          node.parents = node.parents.filter(p => p !== nodeId).concat(parents);
+        });
+      });
+    } else if (children.length > 0) {
+      // If node has children but no parents, remove this node from children's parent list
+      children.forEach(child => {
+        nodeCollection.update(child.id, (node) => {
+          node.parents = node.parents.filter(p => p !== nodeId);
+        });
+      });
+    }
+
+    // Delete the node
+    nodeCollection.delete(nodeId);
+  }
+
   const onConnect =
     (params: Connection) => {
       nodeCollection.update(params.target as CustomNodeId, (node) => {
@@ -160,10 +211,11 @@ function Flow() {
     data: {
       ...node.data,
       onAddNode: handleAddNode,
+      onDeleteNode: handleDeleteNode,
     },
   }))
 
-  const handleGraphChange = (value: string) => {
+  const handleSelectedGraphChange = (value: string) => {
     if (value === '__create_new__') {
       const newGraphName = prompt('Enter new graph name:');
       if (newGraphName && newGraphName.trim()) {
@@ -180,23 +232,33 @@ function Flow() {
     }
   }
 
+  const edgeTypesWithCallbacks = useMemo(
+    () => ({
+      custom: (props: any) => <edgeTypes.custom {...props} onInsertNode={handleInsertNode} />,
+    }),
+    [handleInsertNode]
+  );
+
   return (
     <div ref={reactFlowWrapper} style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <div style={{ position: 'absolute', top: '16px', right: '16px', zIndex: 10 }}>
         <GraphSelector
           ref={selectTriggerRef}
           value={graph}
-          options={graphOptions}
-          onValueChange={handleGraphChange}
+          options={allGraphs}
+          onValueChange={handleSelectedGraphChange}
         />
       </div>
       <ReactFlow
         nodes={nodesWithCallbacks}
         nodeTypes={nodeTypes}
         edges={edges}
-        onConnect={onConnect}
-        onConnectEnd={onConnectEnd}
+        edgeTypes={edgeTypesWithCallbacks}
         onEdgesChange={onEdgesChange}
+        defaultEdgeOptions={{ type: 'custom' }}
+        onConnect={onConnect}
+        onReconnect={onReconnect}
+        onConnectEnd={onConnectEnd}
         fitView
       >
         <Background />

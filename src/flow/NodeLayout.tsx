@@ -2,6 +2,7 @@ import { Node, Edge } from '@xyflow/react';
 import { RenderedNodeData } from '../App';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import CustomNode from '../CustomNode';
+import CustomEdge from './CustomEdge';
 
 export const elk = new ELK();
 
@@ -60,5 +61,9 @@ export const elkOptions: Record<string, string> = {
 
 export const nodeTypes = {
   custom: CustomNode,
+};
+
+export const edgeTypes = {
+  custom: CustomEdge,
 };
 

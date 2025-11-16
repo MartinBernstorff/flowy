@@ -24,7 +24,11 @@ interface GraphSelectorProps {
 }
 
 export const GraphSelector = forwardRef<HTMLButtonElement, GraphSelectorProps>(
-    ({ value, options, onValueChange }, ref) => {
+    ({
+        value,
+        options,
+        onValueChange
+    }, ref) => {
         const [open, setOpen] = useState(false);
 
         const handleSelect = (selectedValue: string) => {
