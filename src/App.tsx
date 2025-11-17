@@ -14,7 +14,10 @@ import { GraphSelector } from '@/components/GraphSelector';
 export interface RenderedNodeData extends Record<string, unknown> {
   label: string;
   isNew?: boolean;
+  isPromoted?: boolean;
   onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
+  onPromoteNode?: (nodeId: string) => void;
+  onUnpromoteNode?: () => void;
 }
 
 function Flow() {
@@ -28,6 +31,9 @@ function Flow() {
     return (graphParam as GraphId) || ('default' as GraphId);
   });
 
+  // Promoted node state
+  const [promotedNodeId, setPromotedNodeId] = useState<CustomNodeId | null>(null);
+
   // Sync graph state to URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -36,30 +42,84 @@ function Flow() {
     window.history.replaceState({}, '', newUrl);
   }, [graph]);
 
+  // Reset promoted node when switching graphs
+  useEffect(() => {
+    setPromotedNodeId(null);
+  }, [graph]);
+
   const { fitView } = useReactFlow();
 
   const rawData = useLiveQuery((q) => q.from({ nodes: nodeCollection })).data;
   const allGraphs = Array.from(new Set(rawData.map(it => it.graph)));
   const filteredRawData = useMemo(() => rawData.filter(node => node.graph === graph), [rawData, graph]);
 
+  // Helper function to get all ancestors of a node
+  const getAncestors = useCallback((nodeId: CustomNodeId, data: typeof filteredRawData): Set<CustomNodeId> => {
+    const ancestors = new Set<CustomNodeId>();
+    const toVisit = [nodeId];
+
+    while (toVisit.length > 0) {
+      const current = toVisit.pop()!;
+      const node = data.find(n => n.id === current);
+
+      if (node) {
+        node.parents.forEach(parentId => {
+          if (!ancestors.has(parentId)) {
+            ancestors.add(parentId);
+            toVisit.push(parentId);
+          }
+        });
+      }
+    }
+
+    return ancestors;
+  }, []);
+
+  // Helper function to get immediate children of a node
+  const getImmediateChildren = useCallback((nodeId: CustomNodeId, data: typeof filteredRawData): Set<CustomNodeId> => {
+    return new Set(
+      data
+        .filter(node => node.parents.includes(nodeId))
+        .map(node => node.id)
+    );
+  }, []);
+
+  // Filter data based on promoted node
+  const visibleRawData = useMemo(() => {
+    if (!promotedNodeId) return filteredRawData;
+
+    const ancestors = getAncestors(promotedNodeId, filteredRawData);
+    const immediateChildren = getImmediateChildren(promotedNodeId, filteredRawData);
+
+    return filteredRawData.filter(node =>
+      node.id === promotedNodeId ||
+      ancestors.has(node.id) ||
+      immediateChildren.has(node.id)
+    );
+  }, [filteredRawData, promotedNodeId, getAncestors, getImmediateChildren]);
+
   const nodeData: Node<RenderedNodeData>[] = useMemo(() =>
-    filteredRawData.map((node): Node<RenderedNodeData> => ({
+    visibleRawData.map((node): Node<RenderedNodeData> => ({
       id: node.id,
       position: { x: 0, y: 0 }, // Initial position is 0, so the layout algorithm can position it
-      data: { label: node.label, isNew: node.isNew },
+      data: {
+        label: node.label,
+        isNew: node.isNew,
+        isPromoted: node.id === promotedNodeId
+      },
       type: 'custom',
     }))
-    , [filteredRawData]);
+    , [visibleRawData, promotedNodeId]);
 
   const edgeData: Edge[] = useMemo(() =>
-    filteredRawData.flatMap(it =>
+    visibleRawData.flatMap(it =>
       it.parents.map(parentId => ({
         id: `${parentId}-${it.id}`,
         source: parentId,
         target: it.id,
       }))
     )
-    , [filteredRawData]);
+    , [visibleRawData]);
 
   const [nodes, setNodes] = useState<Node<RenderedNodeData>[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -79,18 +139,22 @@ function Flow() {
     });
   }, [nodeData, edgeData, fitView]);
 
-  // Keyboard shortcut handler for Cmd+K
+  // Keyboard shortcut handler for Cmd+K and ESC
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
         event.preventDefault();
         selectTriggerRef.current?.click();
       }
+      if (event.key === 'Escape' && promotedNodeId) {
+        event.preventDefault();
+        setPromotedNodeId(null);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [promotedNodeId]);
 
   const newNodeLabel = (input: CustomNodeId) => `Node ${input.slice(0, 4)}`;
 
@@ -206,12 +270,22 @@ function Flow() {
     setEdges((eds) => applyEdgeChanges(changes, eds));
   }
 
+  const handlePromoteNode = useCallback((nodeId: CustomNodeId) => {
+    setPromotedNodeId(nodeId);
+  }, []);
+
+  const handleUnpromoteNode = useCallback(() => {
+    setPromotedNodeId(null);
+  }, []);
+
   const nodesWithCallbacks = nodes.map(node => ({
     ...node,
     data: {
       ...node.data,
       onAddNode: handleAddNode,
       onDeleteNode: handleDeleteNode,
+      onPromoteNode: handlePromoteNode,
+      onUnpromoteNode: handleUnpromoteNode,
     },
   }))
 

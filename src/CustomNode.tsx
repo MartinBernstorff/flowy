@@ -5,8 +5,11 @@ import { nodeCollection } from './persistence/NodeCollection';
 interface CustomNodeData extends Record<string, unknown> {
     label: string;
     isNew?: boolean;
+    isPromoted: boolean;
     onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
     onDeleteNode?: (nodeId: string) => void;
+    onPromoteNode: (nodeId: string) => void;
+    onUnpromoteNode: () => void;
 }
 
 interface CustomNodeProps {
@@ -99,6 +102,9 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                         nodeCollection.delete(id);
                     }
                     break;
+                case 'w':
+                    data.onPromoteNode(id);
+                    break;
                 case 'e':
                     event.preventDefault();
                     setIsEditing(true);
@@ -113,10 +119,20 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
 
     const fieldClasses = "border-none outline-none bg-transparent text-center wrap-break-word w-full h-full resize-none text-black overflow-hidden text-sm";
 
+    const getStateStyle = () => {
+        if (data.isPromoted) {
+            return 'border-2 border-blue-500 bg-white';
+        }
+        if (isHovered) {
+            return 'border-2 border-black bg-gray-200';
+        }
+        return 'border-2 border-gray-300 bg-white';
+    };
+
     return (
         <div
             ref={nodeRef}
-            className={`w-32 h-24 shadow-sm rounded-sm border ${isHovered ? 'border-black bg-gray-200' : 'border-gray-300 bg-white'} relative flex items-center justify-center p-2`}
+            className={`w-32 h-24 shadow-sm rounded-sm ${getStateStyle()} relative flex items-center justify-center p-2 shadow-sm cursor-pointer`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleClick}
