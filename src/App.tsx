@@ -10,6 +10,8 @@ import { useLiveQuery } from '@tanstack/react-db';
 import { getLayoutedElements, nodeTypes, edgeTypes } from './flow/NodeLayout';
 import { CustomNodeId, GraphId, nodeCollection } from './persistence/NodeCollection';
 import { GraphSelector } from '@/components/GraphSelector';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 export interface RenderedNodeData extends Record<string, unknown> {
   label: string;
@@ -33,6 +35,10 @@ function Flow() {
 
   // Promoted node state
   const [promotedNodeId, setPromotedNodeId] = useState<CustomNodeId | null>(null);
+
+  // New graph dialog state
+  const [isNewGraphDialogOpen, setIsNewGraphDialogOpen] = useState(false);
+  const [newGraphName, setNewGraphName] = useState('');
 
   // Sync graph state to URL
   useEffect(() => {
@@ -291,19 +297,29 @@ function Flow() {
 
   const handleSelectedGraphChange = (value: string) => {
     if (value === '__create_new__') {
-      const newGraphName = prompt('Enter new graph name:');
-      if (newGraphName && newGraphName.trim()) {
-        setGraph(newGraphName.trim() as GraphId);
-        nodeCollection.insert({
-          id: crypto.randomUUID() as CustomNodeId,
-          label: 'Node 1',
-          parents: [],
-          graph: newGraphName.trim() as GraphId
-        });
-      }
+      setIsNewGraphDialogOpen(true);
     } else {
       setGraph(value as GraphId);
     }
+  }
+
+  const handleCreateNewGraph = () => {
+    if (newGraphName && newGraphName.trim()) {
+      setGraph(newGraphName.trim() as GraphId);
+      nodeCollection.insert({
+        id: crypto.randomUUID() as CustomNodeId,
+        label: 'Node 1',
+        parents: [],
+        graph: newGraphName.trim() as GraphId
+      });
+      setIsNewGraphDialogOpen(false);
+      setNewGraphName('');
+    }
+  }
+
+  const handleCancelNewGraph = () => {
+    setIsNewGraphDialogOpen(false);
+    setNewGraphName('');
   }
 
   const edgeTypesWithCallbacks = useMemo(
@@ -337,6 +353,40 @@ function Flow() {
       >
         <Background />
       </ReactFlow>
+
+      <Dialog open={isNewGraphDialogOpen} onOpenChange={setIsNewGraphDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Graph</DialogTitle>
+            <DialogDescription>
+              Enter a name for your new graph.
+            </DialogDescription>
+          </DialogHeader>
+          <input
+            type="text"
+            value={newGraphName}
+            onChange={(e) => setNewGraphName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleCreateNewGraph();
+              } else if (e.key === 'Escape') {
+                handleCancelNewGraph();
+              }
+            }}
+            placeholder="Graph name"
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autoFocus
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelNewGraph}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateNewGraph} disabled={!newGraphName.trim()}>
+              Create
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
