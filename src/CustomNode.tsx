@@ -88,6 +88,9 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
 
             event.preventDefault();
 
+            // Avoid modifying on hover
+            setIsHovered(false);
+
             switch (key) {
                 case 'a':
                 case 'b':
@@ -108,7 +111,6 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                 case 'e':
                     event.preventDefault();
                     setIsEditing(true);
-                    setIsHovered(false);
                     break;
             }
         };
