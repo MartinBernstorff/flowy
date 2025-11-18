@@ -92,9 +92,6 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
 
             event.preventDefault();
 
-            // Avoid modifying on hover
-            setIsHovered(false);
-
             switch (key) {
                 case 'a':
                 case 'b':
