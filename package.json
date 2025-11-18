@@ -61,6 +61,11 @@
     ],
     "directories": {
       "output": "release"
+    },
+    "mac": {
+      "target": [
+        "dir"
+      ]
     }
   }
 }
