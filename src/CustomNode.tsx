@@ -84,6 +84,10 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
             if (!isHovered) return;
             if (isEditing) return;
 
+            if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') {
+                return;
+            }
+
             const key = event.key.toLowerCase();
 
             event.preventDefault();
