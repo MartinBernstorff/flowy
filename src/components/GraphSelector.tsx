@@ -56,7 +56,7 @@ export const GraphSelector = forwardRef<HTMLButtonElement, GraphSelectorProps>(
                         <CommandList>
                             <CommandEmpty>No graph found.</CommandEmpty>
                             <CommandGroup>
-                                {options.map((option) => (
+                                {options.sort().map((option) => (
                                     <CommandItem
                                         key={option}
                                         value={option}
