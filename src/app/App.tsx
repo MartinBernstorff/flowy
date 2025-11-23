@@ -7,13 +7,12 @@ import {
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useLiveQuery } from '@tanstack/react-db';
-import { getLayoutedElements, nodeTypes, edgeTypes, RenderedNodeData } from 'src/composition/NodeLayout';
-import { nodeCollection } from 'src/persistence/NodeCollection';
-import { CustomNodeId, GraphId } from "src/core/Node";
-import { GraphSelector } from 'src/composition/GraphSelector';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'src/component/dialog';
-import { Button } from 'src/component/button';
-import { Graph } from 'src/action/GraphActions';
+import { getLayoutedElements, nodeTypes, edgeTypes, RenderedNodeData } from '../composition/NodeLayout';
+import { nodeCollection } from '../persistence/NodeCollection';
+import { CustomNodeId, GraphId } from "../core/Node";
+import { GraphSelector } from '../composition/GraphSelector';
+import { NewGraphDialog } from '../composition/NewGraphDialog';
+import { Graph } from '../action/GraphActions';
 
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -31,7 +30,6 @@ function Flow() {
 
   // New graph dialog state
   const [isNewGraphDialogOpen, setIsNewGraphDialogOpen] = useState(false);
-  const [newGraphName, setNewGraphName] = useState('');
 
   // Sync graph state to URL
   useEffect(() => {
@@ -127,9 +125,8 @@ function Flow() {
 
   const newNodeLabel = (input: CustomNodeId) => `Node ${input.slice(0, 4)}`;
 
-
-  const handleInsertNode = useCallback((sourceId: CustomNodeId, targetId: CustomNodeId) => {
-    Graph.insertNode(sourceId, targetId, graph, newNodeLabel);
+  const handleInsertNode = useCallback((sourceId: CustomNodeId, targetId: CustomNodeId, label: string) => {
+    Graph.insertNode([sourceId], [targetId], graph, label);
   }, [graph]);
 
   const onConnect =
@@ -200,23 +197,14 @@ function Flow() {
     }
   }
 
-  const handleCreateNewGraph = () => {
-    if (newGraphName && newGraphName.trim()) {
-      setGraph(newGraphName.trim() as GraphId);
-      nodeCollection.insert({
-        id: crypto.randomUUID() as CustomNodeId,
-        label: 'Node 1',
-        parents: [],
-        graph: newGraphName.trim() as GraphId
-      });
-      setIsNewGraphDialogOpen(false);
-      setNewGraphName('');
-    }
-  }
-
-  const handleCancelNewGraph = () => {
-    setIsNewGraphDialogOpen(false);
-    setNewGraphName('');
+  const handleGraphCreated = (graphId: GraphId) => {
+    setGraph(graphId);
+    Graph.insertNode(
+      [],
+      [],
+      graphId,
+      'Root Node',
+    )
   }
 
   const edgeTypesWithCallbacks = useMemo(
@@ -236,6 +224,7 @@ function Flow() {
           onValueChange={handleSelectedGraphChange}
         />
       </div>
+
       <ReactFlow
         nodes={nodesWithCallbacks}
         nodeTypes={nodeTypes}
@@ -251,39 +240,11 @@ function Flow() {
         <Background />
       </ReactFlow>
 
-      <Dialog open={isNewGraphDialogOpen} onOpenChange={setIsNewGraphDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create New Graph</DialogTitle>
-            <DialogDescription>
-              Enter a name for your new graph.
-            </DialogDescription>
-          </DialogHeader>
-          <input
-            type="text"
-            value={newGraphName}
-            onChange={(e) => setNewGraphName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleCreateNewGraph();
-              } else if (e.key === 'Escape') {
-                handleCancelNewGraph();
-              }
-            }}
-            placeholder="Graph name"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            autoFocus
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={handleCancelNewGraph}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreateNewGraph} disabled={!newGraphName.trim()}>
-              Create
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <NewGraphDialog
+        isOpen={isNewGraphDialogOpen}
+        onOpenChange={setIsNewGraphDialogOpen}
+        onGraphCreated={handleGraphCreated}
+      />
     </div>
   )
 }

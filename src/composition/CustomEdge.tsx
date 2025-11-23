@@ -1,9 +1,9 @@
 import { BaseEdge, EdgeProps, getSimpleBezierPath, useReactFlow } from '@xyflow/react';
 import { useState, useEffect } from 'react';
-import { CustomNodeId } from "src/core/Node";
+import { CustomNodeId } from "../core/Node";
 
 interface CustomEdgeProps extends EdgeProps {
-    onInsertNode?: (sourceId: CustomNodeId, targetId: CustomNodeId) => void;
+    onInsertNode: (sourceId: CustomNodeId, targetId: CustomNodeId, label: string) => void;
 }
 
 export default function CustomEdge({
@@ -39,7 +39,7 @@ export default function CustomEdge({
             if (event.key === 'd') {
                 deleteElements({ edges: [{ id }] });
             } else if ((event.key === 'a' || event.key === 'b') && onInsertNode) {
-                onInsertNode(source as CustomNodeId, target as CustomNodeId);
+                onInsertNode(source as CustomNodeId, target as CustomNodeId, `Node ${crypto.randomUUID().slice(0, 4)}`);
             }
         };
 

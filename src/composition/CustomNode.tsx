@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position, useConnection } from '@xyflow/react';
-import { CustomNodeId } from "src/core/Node";
-import { Graph } from 'src/action/GraphActions';
+import { CustomNodeId } from "../core/Node";
+import { Graph } from '../action/GraphActions';
 
 interface CustomNodeData extends Record<string, unknown> {
     label: string;

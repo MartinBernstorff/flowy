@@ -1,5 +1,5 @@
-import { CustomNode, GraphId, nodeCollection } from 'src/persistence/NodeCollection';
-import { CustomNodeId } from "src/core/Node";
+import { CustomNode, CustomNodeId, GraphId } from "../core/Node";
+import { nodeCollection } from "../persistence/NodeCollection";
 
 export interface GraphNode {
     id: CustomNodeId;
@@ -76,23 +76,25 @@ export const Graph = {
     /**
      * Insert a new node between a source and target node
      */
-    insertNode: (sourceId: CustomNodeId, targetId: CustomNodeId, graph: GraphId, newNodeLabel: (id: CustomNodeId) => string) => {
+    insertNode: (sources: CustomNodeId[], targets: CustomNodeId[], graph: GraphId, label: string) => {
         const newNodeId = crypto.randomUUID() as CustomNodeId;
 
         // Create the new node with the source as its parent
         nodeCollection.insert({
             id: newNodeId,
-            label: newNodeLabel(newNodeId),
-            parents: [sourceId],
+            label: label,
+            parents: sources,
             isNew: true,
             graph: graph
         });
 
         // Update the target to replace the source with the new node
-        nodeCollection.update(targetId, (node) => {
-            node.parents = node.parents.map(parentId =>
-                parentId === sourceId ? newNodeId : parentId
-            );
+        targets.forEach(targetId => {
+            nodeCollection.update(targetId, (node) => {
+                node.parents = node.parents.map(parentId =>
+                    sources.includes(parentId as CustomNodeId) ? newNodeId : parentId
+                );
+            });
         });
     },
 

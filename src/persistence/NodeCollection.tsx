@@ -16,7 +16,7 @@ import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
 // Enable dev mode (optional, recommended during development)
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
-import { CustomNodeSchema } from "src/core/Node";
+import { CustomNodeSchema } from "../core/Node";
 addRxPlugin(RxDBDevModePlugin)
 
 const db = await createRxDatabase({
