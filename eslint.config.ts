@@ -34,18 +34,17 @@ export default tseslint.config(
       "boundaries/element-types": [2, {
         default: "disallow",
         rules: [
+          { from: ELEM.all, allow: [ELEM.core] }, // core can be used by any layer
           { from: ELEM.action, allow: [ELEM.persistence] },
-          {
-            from: ELEM.app, allow: [ELEM.page]
-          },
+          { from: ELEM.app, allow: [ELEM.page] },
           {
             from: ELEM.composition, allow: [
               ELEM.action,
               ELEM.component,
             ]
           },
-          { from: ELEM.component, allow: [ELEM.composition, ELEM.action, ELEM.persistence] },
-          { from: ELEM.all, allow: [ELEM.core] }, // core can be used by any layer
+          { from: ELEM.component, allow: [ELEM.action] },
+          { from: ELEM.page, allow: [ELEM.composition, ELEM.action, ELEM.persistence] },
         ]
       }],
       "boundaries/no-private": [2],

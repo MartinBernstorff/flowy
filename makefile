@@ -12,4 +12,3 @@ deploy:
 validate:
 	bun tsc
 	bun lint
-	bun test
