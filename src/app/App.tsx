@@ -6,7 +6,7 @@ import { nodeCollection } from '../persistence/NodeCollection';
 import { GraphId } from "../core/Node";
 import { GraphSelector } from '../composition/GraphSelector';
 import { NewGraphDialog } from '../composition/NewGraphDialog';
-import { Graph } from '../action/GraphActions';
+import { NodeActions } from '../action/NodeActions';
 import { FlowCanvas } from '../composition/FlowCanvas';
 
 function Flow() {
@@ -59,7 +59,7 @@ function Flow() {
 
   const handleGraphCreated = (graphId: GraphId) => {
     setGraph(graphId);
-    Graph.insertNode(
+    NodeActions.insertNode(
       [],
       [],
       graphId,

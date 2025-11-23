@@ -6,7 +6,8 @@ import {
 } from '@xyflow/react';
 import { getLayoutedElements, nodeTypes, edgeTypes } from './NodeLayout';
 import { CustomNodeId, GraphId, CustomNode } from "../core/Node";
-import { Graph } from '../action/GraphActions';
+import { GraphActions } from '../action/GraphActions';
+import { NodeActions as NodeActions } from '../action/NodeActions';
 import { FlowyNodeData } from './CustomNode';
 
 interface FlowCanvasProps {
@@ -30,9 +31,9 @@ export function FlowCanvas({
     }, [graph]);
 
     const onConnect = useCallback((params: Connection) => {
-        const node = Graph.getNode(params.target as CustomNodeId)!;
+        const node = NodeActions.getNode(params.target as CustomNodeId)!;
 
-        Graph.updateNode(
+        NodeActions.updateNode(
             params.target as CustomNodeId,
             {
                 parents: Array.from(new Set([...node.parents, params.source as CustomNodeId])),
@@ -45,7 +46,7 @@ export function FlowCanvas({
             // when a connection is dropped on the pane it's not valid
             if (!connectionState.isValid && connectionState.fromNode) {
 
-                Graph.insertNode(
+                NodeActions.insertNode(
                     [connectionState.fromNode.id as CustomNodeId],
                     [],
                     graph,
@@ -60,8 +61,8 @@ export function FlowCanvas({
     const visibleRawData = useMemo(() => {
         if (!promotedNodeId) return filteredRawData;
 
-        const ancestors = Graph.getAncestors(promotedNodeId, filteredRawData);
-        const immediateChildren = Graph.getImmediateChildren(promotedNodeId, filteredRawData);
+        const ancestors = GraphActions.getAncestors(promotedNodeId, filteredRawData);
+        const immediateChildren = GraphActions.getImmediateChildren(promotedNodeId, filteredRawData);
 
         return filteredRawData.filter(node =>
             node.id === promotedNodeId ||
@@ -127,7 +128,7 @@ export function FlowCanvas({
     const newNodeLabel = (input: CustomNodeId) => `Node ${input.slice(0, 4)}`;
 
     const handleInsertNode = useCallback((sourceId: CustomNodeId, targetId: CustomNodeId, label: string) => {
-        Graph.insertNode([sourceId], [targetId], graph, label);
+        NodeActions.insertNode([sourceId], [targetId], graph, label);
     }, [graph]);
 
     const onEdgesChange = (changes: EdgeChange[]) => {
@@ -152,10 +153,10 @@ export function FlowCanvas({
             ...node.data,
             actions: {
                 onAddNode: (target: CustomNodeId, direction: 'before' | 'after') => {
-                    Graph.addNode(target, direction, graph, newNodeLabel);
+                    NodeActions.addNode(target, direction, graph, newNodeLabel);
                 },
                 onDeleteNode: (nodeId: CustomNodeId) => {
-                    Graph.deleteNode(nodeId, filteredRawData);
+                    NodeActions.deleteNode(nodeId, filteredRawData);
                 },
                 onPromoteNode: handlePromoteNode,
             }

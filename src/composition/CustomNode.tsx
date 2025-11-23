@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position, useConnection } from '@xyflow/react';
 import { CustomNodeId } from "../core/Node";
-import { Graph } from '../action/GraphActions';
+import { NodeActions } from '../action/NodeActions';
 
 interface CustomNodeProps {
     id: string;
@@ -45,7 +45,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
         switch (event.key) {
             case 'Enter':
                 event.preventDefault();
-                Graph.updateNode(customNodeId, {
+                NodeActions.updateNode(customNodeId, {
                     label: editedLabel,
                     isNew: false
                 });
@@ -57,7 +57,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                 setEditedLabel(data.label);
 
                 if (data.isNew) {
-                    Graph.updateNode(customNodeId, {
+                    NodeActions.updateNode(customNodeId, {
                         isNew: false
                     });
                 }
@@ -67,7 +67,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
     };
 
     const handleBlur = () => {
-        Graph.updateNode(customNodeId,
+        NodeActions.updateNode(customNodeId,
             {
                 label: editedLabel,
                 isNew: false
