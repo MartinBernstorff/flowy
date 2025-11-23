@@ -173,13 +173,18 @@ function Flow() {
 
   const nodesWithCallbacks = nodes.map(node => ({
     ...node,
-    onAddNode: (target: CustomNodeId, direction: 'before' | 'after') => {
-      Graph.addNode(target, direction, graph, newNodeLabel);
-    },
-    onDeleteNode: (nodeId: CustomNodeId) => {
-      Graph.deleteNode(nodeId, filteredRawData);
-    },
-    onPromoteNode: handlePromoteNode,
+    data: {
+      ...node.data,
+      actions: {
+        onAddNode: (target: CustomNodeId, direction: 'before' | 'after') => {
+          Graph.addNode(target, direction, graph, newNodeLabel);
+        },
+        onDeleteNode: (nodeId: CustomNodeId) => {
+          Graph.deleteNode(nodeId, filteredRawData);
+        },
+        onPromoteNode: handlePromoteNode,
+      }
+    }
   }))
 
   const handleSelectedGraphChange = (value: string) => {

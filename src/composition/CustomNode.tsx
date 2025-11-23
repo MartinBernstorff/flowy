@@ -5,14 +5,11 @@ import { Graph } from '../action/GraphActions';
 
 interface CustomNodeProps {
     id: string;
-    data: FlowyNodeData;
-    onAddNode: (nodeId: string, direction: 'before' | 'after') => void;
-    onDeleteNode: (nodeId: string) => void;
-    onPromoteNode: (nodeId: string) => void;
-    onUnpromoteNode: () => void;
+    data: FlowyRenderableNode;
 }
 
-export default function CustomNode({ id, data, onAddNode, onDeleteNode, onPromoteNode }: CustomNodeProps) {
+// A react-flow node must take properties id and data
+export default function CustomNode({ id, data }: CustomNodeProps) {
     const customNodeId = id as CustomNodeId;
     const connection = useConnection();
     const [isHovered, setIsHovered] = useState(false);
@@ -96,14 +93,14 @@ export default function CustomNode({ id, data, onAddNode, onDeleteNode, onPromot
                 case 'a':
                 case 'b': {
                     const direction = key === 'a' ? 'after' : 'before';
-                    onAddNode(customNodeId, direction);
+                    data.actions.onAddNode(customNodeId, direction);
                     break;
                 }
                 case 'd':
-                    onDeleteNode(customNodeId);
+                    data.actions.onDeleteNode(customNodeId);
                     break;
                 case 'w':
-                    onPromoteNode(customNodeId);
+                    data.actions.onPromoteNode(customNodeId);
                     break;
                 case 'e':
                     event.preventDefault();
@@ -114,7 +111,7 @@ export default function CustomNode({ id, data, onAddNode, onDeleteNode, onPromot
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isHovered, customNodeId, data, isEditing, onDeleteNode, onPromoteNode, onAddNode]);
+    }, [isHovered, customNodeId, data, isEditing]);
 
     const fieldClasses = "border-none outline-none bg-transparent text-center wrap-break-word w-full h-full resize-none text-black overflow-hidden text-sm";
 
@@ -170,9 +167,24 @@ export default function CustomNode({ id, data, onAddNode, onDeleteNode, onPromot
             )}
         </div>
     );
-} export interface FlowyNodeData extends Record<string, unknown> {
+}
+
+export interface FlowyNodeActions {
+    onAddNode: (nodeId: string, direction: 'before' | 'after') => void;
+    onDeleteNode: (nodeId: string) => void;
+    onPromoteNode: (nodeId: string) => void;
+    onUnpromoteNode: () => void;
+}
+
+export interface FlowyNodeData extends Record<string, unknown> {
     label: string;
     isNew: boolean;
     isPromoted: boolean;
 }
+
+export interface FlowyRenderableNode extends FlowyNodeData {
+    actions: FlowyNodeActions;
+}
+
+
 
