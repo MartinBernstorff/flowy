@@ -7,21 +7,13 @@ import {
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useLiveQuery } from '@tanstack/react-db';
-import { getLayoutedElements, nodeTypes, edgeTypes } from 'src/composition/NodeLayout';
-import { CustomNodeId, GraphId, nodeCollection } from 'src/persistence/NodeCollection';
+import { getLayoutedElements, nodeTypes, edgeTypes, RenderedNodeData } from 'src/composition/NodeLayout';
+import { nodeCollection } from 'src/persistence/NodeCollection';
+import { CustomNodeId, GraphId } from "src/core/Node";
 import { GraphSelector } from 'src/composition/GraphSelector';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'src/component/dialog';
 import { Button } from 'src/component/button';
-import { Graph } from 'src/action/Graph';
-
-export interface RenderedNodeData extends Record<string, unknown> {
-  label: string;
-  isNew?: boolean;
-  isPromoted?: boolean;
-  onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
-  onPromoteNode?: (nodeId: string) => void;
-  onUnpromoteNode?: () => void;
-}
+import { Graph } from 'src/action/GraphActions';
 
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);

@@ -1,6 +1,5 @@
 import { createCollection } from "@tanstack/react-db";
 import { rxdbCollectionOptions } from "@tanstack/rxdb-db-collection";
-import { z } from "zod";
 
 import { createRxDatabase, addRxPlugin } from 'rxdb/plugins/core';
 
@@ -17,6 +16,7 @@ import { wrappedValidateAjvStorage } from 'rxdb/plugins/validate-ajv';
 
 // Enable dev mode (optional, recommended during development)
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+import { CustomNodeSchema } from "src/core/Node";
 addRxPlugin(RxDBDevModePlugin)
 
 const db = await createRxDatabase({
@@ -46,21 +46,6 @@ await db.addCollections({
     schema: customNodeRxdbSchema
   }
 });
-
-const CustomNodeId = z.string().brand<'CustomNodeId'>();
-export type CustomNodeId = z.infer<typeof CustomNodeId>;
-
-const GraphId = z.string().brand<'GraphId'>();
-export type GraphId = z.infer<typeof GraphId>;
-
-const CustomNodeSchema = z.object({
-  id: CustomNodeId,
-  label: z.string(),
-  parents: z.array(CustomNodeId),
-  isNew: z.boolean().default(false),
-  graph: GraphId
-});
-export type CustomNode = z.infer<typeof CustomNodeSchema>;
 
 // Use your RxDB collection instance here
 export const nodeCollection = createCollection(

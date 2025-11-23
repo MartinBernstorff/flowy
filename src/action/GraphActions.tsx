@@ -1,4 +1,5 @@
-import { CustomNodeId, GraphId, nodeCollection } from 'src/persistence/NodeCollection';
+import { CustomNode, GraphId, nodeCollection } from 'src/persistence/NodeCollection';
+import { CustomNodeId } from "src/core/Node";
 
 export interface GraphNode {
     id: CustomNodeId;
@@ -96,14 +97,23 @@ export const Graph = {
     },
 
     /**
+     * Update node
+     */
+    updateNode: (nodeId: CustomNodeId, input: Partial<CustomNode>) => {
+        nodeCollection.update(nodeId, (draft) => {
+            Object.assign(draft, input);
+        });
+    },
+
+    /**
      * Delete a node and reconnect its parents to its children
      */
-    deleteNode: <T extends GraphNode>(nodeId: CustomNodeId, data: T[]) => {
-        const nodeToDelete = data.find(n => n.id === nodeId);
+    deleteNode: <T extends GraphNode>(nodeId: CustomNodeId, nodes: T[]) => {
+        const nodeToDelete = nodes.find(n => n.id === nodeId);
         if (!nodeToDelete) return;
 
         const parents = nodeToDelete.parents;
-        const children = data.filter(n => n.parents.includes(nodeId));
+        const children = nodes.filter(n => n.parents.includes(nodeId));
 
         // If the node has both parents and children, link parents to all children
         if (parents.length > 0 && children.length > 0) {

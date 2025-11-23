@@ -24,9 +24,21 @@ export default tseslint.config(
         default: "disallow",
         rules: [
           { from: "action", allow: ["persistence"] },
-          { from: "app", allow: ["action", "composition"] },
-          { from: "composition", allow: ["component", "action"] },
-          { from: "page", allow: ["composition"] },
+          {
+            from: "app", allow: [
+              "action",
+              "composition",
+              "persistence"
+            ]
+          },
+          {
+            from: "composition", allow: [
+              "action",
+              "component",
+            ]
+          },
+          { from: "page", allow: ["composition", "persistence"] },
+          { from: "*", allow: ["core"] }, // core can be used by any layer
         ]
       }],
       "boundaries/no-private": [2],
@@ -44,6 +56,7 @@ export default tseslint.config(
         { type: "app", pattern: "app/**" },
         { type: "component", pattern: "component/**" },
         { type: "composition", pattern: "composition/**" },
+        { type: "core", pattern: "core/**" },
         { type: "page", pattern: "page/**" },
         { type: "persistence", pattern: "persistence/**" },
       ],

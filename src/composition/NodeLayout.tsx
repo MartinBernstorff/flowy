@@ -1,5 +1,4 @@
 import { Node, Edge } from '@xyflow/react';
-import { RenderedNodeData } from 'src/app/App';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import CustomNode from 'src/composition/CustomNode';
 import CustomEdge from 'src/composition/CustomEdge';
@@ -66,4 +65,12 @@ export const nodeTypes = {
 export const edgeTypes = {
   custom: CustomEdge,
 };
+export interface RenderedNodeData extends Record<string, unknown> {
+  label: string;
+  isNew?: boolean;
+  isPromoted?: boolean;
+  onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
+  onPromoteNode?: (nodeId: string) => void;
+  onUnpromoteNode?: () => void;
+}
 

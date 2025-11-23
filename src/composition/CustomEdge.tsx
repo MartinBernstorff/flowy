@@ -1,6 +1,6 @@
 import { BaseEdge, EdgeProps, getSimpleBezierPath, useReactFlow } from '@xyflow/react';
 import { useState, useEffect } from 'react';
-import { CustomNodeId } from 'src/persistence/NodeCollection';
+import { CustomNodeId } from "src/core/Node";
 
 interface CustomEdgeProps extends EdgeProps {
     onInsertNode?: (sourceId: CustomNodeId, targetId: CustomNodeId) => void;

@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position, useConnection } from '@xyflow/react';
-import { nodeCollection } from 'src/persistence/NodeCollection';
+import { CustomNodeId } from "src/core/Node";
+import { Graph } from 'src/action/GraphActions';
 
 interface CustomNodeData extends Record<string, unknown> {
     label: string;
-    isNew?: boolean;
+    isNew: boolean;
     isPromoted: boolean;
-    onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
-    onDeleteNode?: (nodeId: string) => void;
+    onAddNode: (nodeId: string, direction: 'before' | 'after') => void;
+    onDeleteNode: (nodeId: string) => void;
     onPromoteNode: (nodeId: string) => void;
     onUnpromoteNode: () => void;
 }
 
 interface CustomNodeProps {
-    id: string;
+    id: CustomNodeId;
     data: CustomNodeData;
 }
 
@@ -52,9 +53,9 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
         switch (event.key) {
             case 'Enter':
                 event.preventDefault();
-                nodeCollection.update(id, (node) => {
-                    node.label = editedLabel;
-                    node.isNew = false;
+                Graph.updateNode(id, {
+                    label: editedLabel,
+                    isNew: false
                 });
                 setIsEditing(false);
                 break;
@@ -62,20 +63,24 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                 event.preventDefault();
                 setIsEditing(false);
                 setEditedLabel(data.label);
+
                 if (data.isNew) {
-                    nodeCollection.update(id, (node) => {
-                        node.isNew = false;
+                    Graph.updateNode(id, {
+                        isNew: false
                     });
                 }
+
                 break;
         }
     };
 
     const handleBlur = () => {
-        nodeCollection.update(id, (node) => {
-            node.label = editedLabel;
-            node.isNew = false;
-        });
+        Graph.updateNode(id,
+            {
+                label: editedLabel,
+                isNew: false
+            }
+        );
         setIsEditing(false);
     };
 
@@ -103,8 +108,6 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                 case 'd':
                     if (data.onDeleteNode) {
                         data.onDeleteNode(id);
-                    } else {
-                        nodeCollection.delete(id);
                     }
                     break;
                 case 'w':
