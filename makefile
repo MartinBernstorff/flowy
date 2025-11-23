@@ -3,8 +3,13 @@ dev:
 
 deploy:
 	rm -rf release
-	bun build:electron
 	killall "Flowy" || true
+	bun build:electron
 	rm -rf /Applications/Flowy.app || true
 	cp -R release/mac-arm64/Flowy.app /Applications/Flowy.app
-	sleep 1 && open -a /Applications/Flowy.app
+	open -a /Applications/Flowy.app
+
+validate:
+	bun tsc
+	bun lint
+	bun test

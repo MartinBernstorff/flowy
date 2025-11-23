@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Handle, Position, useConnection } from '@xyflow/react';
-import { nodeCollection } from './persistence/NodeCollection';
+import { nodeCollection } from 'src/persistence/NodeCollection';
 
 interface CustomNodeData extends Record<string, unknown> {
     label: string;
@@ -94,11 +94,12 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
 
             switch (key) {
                 case 'a':
-                case 'b':
+                case 'b': {
                     if (!data.onAddNode) return;
                     const direction = key === 'a' ? 'after' : 'before';
                     data.onAddNode(id, direction);
                     break;
+                }
                 case 'd':
                     if (data.onDeleteNode) {
                         data.onDeleteNode(id);
@@ -118,13 +119,13 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isHovered, id, data]);
+    }, [isHovered, id, data, isEditing]);
 
     const fieldClasses = "border-none outline-none bg-transparent text-center wrap-break-word w-full h-full resize-none text-black overflow-hidden text-sm";
 
     const getStateStyle = () => {
         if (data.isPromoted) {
-            return 'border-2 border-blue-500 bg-white';
+            return 'border-2 border-orange-300 bg-white';
         }
         if (isHovered) {
             return 'border-2 border-black bg-gray-200';

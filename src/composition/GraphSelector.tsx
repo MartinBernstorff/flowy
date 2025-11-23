@@ -1,7 +1,7 @@
 import { useState, forwardRef } from 'react';
 import { Check, ChevronsUpDown, Plus } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { cn } from 'src/component/utils';
+import { Button } from 'src/component/button';
 import {
     Command,
     CommandEmpty,
@@ -10,12 +10,12 @@ import {
     CommandItem,
     CommandList,
     CommandSeparator,
-} from '@/components/ui/command';
+} from 'src/component/command';
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from '@/components/ui/popover';
+} from 'src/component/popover';
 
 interface GraphSelectorProps {
     value: string;

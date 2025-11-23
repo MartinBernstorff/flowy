@@ -1,0 +1,1594 @@
+[boundaries]: 'eslint.config.ts' is of unknown type
+[boundaries]: 
+{
+  "path": "eslint.config.ts",
+  "elementPath": null,
+  "internalPath": null,
+  "source": null,
+  "baseSource": null,
+  "parents": null,
+  "type": null,
+  "category": null,
+  "captured": null,
+  "origin": null,
+  "isIgnored": true,
+  "isUnknown": true
+}
+[boundaries]: 'main.js' is of unknown type
+[boundaries]: 
+{
+  "path": "main.js",
+  "elementPath": null,
+  "internalPath": null,
+  "source": null,
+  "baseSource": null,
+  "parents": null,
+  "type": null,
+  "category": null,
+  "captured": null,
+  "origin": null,
+  "isIgnored": true,
+  "isUnknown": true
+}
+[boundaries]: 'src/app/App.tsx' is of type 'app'
+[boundaries]: 
+{
+  "path": "src/app/App.tsx",
+  "type": "app",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/app",
+  "internalPath": "App.tsx",
+  "parents": []
+}
+[boundaries]: 'react' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/react/index.js",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "react",
+    "baseSource": "react",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "useRef",
+      "useEffect",
+      "useState",
+      "useMemo",
+      "useCallback"
+    ]
+  }
+}
+[boundaries]: '@xyflow/react' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@xyflow/react/dist/esm/index.js",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "@xyflow/react",
+    "baseSource": "@xyflow/react",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "ReactFlow",
+      "Background",
+      "Node",
+      "Edge",
+      "Connection",
+      "OnConnectEnd",
+      "useReactFlow",
+      "applyEdgeChanges",
+      "EdgeChange",
+      "reconnectEdge",
+      "EdgeProps"
+    ]
+  }
+}
+[boundaries]: '@xyflow/react/dist/style.css' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@xyflow/react/dist/style.css",
+    "elementPath": null,
+    "internalPath": "/dist/style.css",
+    "source": "@xyflow/react/dist/style.css",
+    "baseSource": "@xyflow/react",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": []
+  }
+}
+[boundaries]: '@tanstack/react-db' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@tanstack/react-db/dist/esm/index.js",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "@tanstack/react-db",
+    "baseSource": "@tanstack/react-db",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "useLiveQuery"
+    ]
+  }
+}
+[boundaries]: 'src/composition/NodeLayout' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/composition/NodeLayout",
+    "source": "src/composition/NodeLayout",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "getLayoutedElements",
+      "nodeTypes",
+      "edgeTypes"
+    ]
+  }
+}
+[boundaries]: 'src/persistence/NodeCollection' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/persistence/NodeCollection",
+    "source": "src/persistence/NodeCollection",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "CustomNodeId",
+      "GraphId",
+      "nodeCollection"
+    ]
+  }
+}
+[boundaries]: 'src/composition/GraphSelector' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/composition/GraphSelector",
+    "source": "src/composition/GraphSelector",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "GraphSelector"
+    ]
+  }
+}
+[boundaries]: 'src/component/dialog' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/component/dialog",
+    "source": "src/component/dialog",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "Dialog",
+      "DialogContent",
+      "DialogDescription",
+      "DialogFooter",
+      "DialogHeader",
+      "DialogTitle"
+    ]
+  }
+}
+[boundaries]: 'src/component/button' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/component/button",
+    "source": "src/component/button",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "Button"
+    ]
+  }
+}
+[boundaries]: 'src/action/Graph' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/app/App.tsx",
+    "type": "app",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/app",
+    "internalPath": "App.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/action/Graph",
+    "source": "src/action/Graph",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "Graph"
+    ]
+  }
+}
+[boundaries]: 'src/action/Graph.tsx' is of type 'action'
+[boundaries]: 
+{
+  "path": "src/action/Graph.tsx",
+  "type": "action",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/action",
+  "internalPath": "Graph.tsx",
+  "parents": []
+}
+[boundaries]: 'src/component/command.tsx' is of type 'component'
+[boundaries]: 
+{
+  "path": "src/component/command.tsx",
+  "type": "component",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/component",
+  "internalPath": "command.tsx",
+  "parents": []
+}
+[boundaries]: 'cmdk' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/command.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "command.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/cmdk/dist/index.mjs",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "cmdk",
+    "baseSource": "cmdk",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "Command"
+    ]
+  }
+}
+[boundaries]: 'lucide-react' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/command.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "command.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/lucide-react/dist/esm/lucide-react.js",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "lucide-react",
+    "baseSource": "lucide-react",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "SearchIcon"
+    ]
+  }
+}
+[boundaries]: 'src/component/utils' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/command.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "command.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/component/utils",
+    "source": "src/component/utils",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "cn"
+    ]
+  }
+}
+[boundaries]: 'src/component/button.tsx' is of type 'component'
+[boundaries]: 
+{
+  "path": "src/component/button.tsx",
+  "type": "component",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/component",
+  "internalPath": "button.tsx",
+  "parents": []
+}
+[boundaries]: '@radix-ui/react-slot' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/button.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "button.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@radix-ui/react-slot/dist/index.mjs",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "@radix-ui/react-slot",
+    "baseSource": "@radix-ui/react-slot",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "Slot"
+    ]
+  }
+}
+[boundaries]: 'class-variance-authority' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/button.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "button.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/class-variance-authority/dist/index.mjs",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "class-variance-authority",
+    "baseSource": "class-variance-authority",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "cva",
+      "VariantProps"
+    ]
+  }
+}
+[boundaries]: 'src/component/dialog.tsx' is of type 'component'
+[boundaries]: 
+{
+  "path": "src/component/dialog.tsx",
+  "type": "component",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/component",
+  "internalPath": "dialog.tsx",
+  "parents": []
+}
+[boundaries]: '@radix-ui/react-dialog' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/dialog.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "dialog.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@radix-ui/react-dialog/dist/index.mjs",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "@radix-ui/react-dialog",
+    "baseSource": "@radix-ui/react-dialog",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": []
+  }
+}
+[boundaries]: 'src/component/popover.tsx' is of type 'component'
+[boundaries]: 
+{
+  "path": "src/component/popover.tsx",
+  "type": "component",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/component",
+  "internalPath": "popover.tsx",
+  "parents": []
+}
+[boundaries]: '@radix-ui/react-popover' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/popover.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "popover.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@radix-ui/react-popover/dist/index.mjs",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "@radix-ui/react-popover",
+    "baseSource": "@radix-ui/react-popover",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": []
+  }
+}
+[boundaries]: 'src/component/select.tsx' is of type 'component'
+[boundaries]: 
+{
+  "path": "src/component/select.tsx",
+  "type": "component",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/component",
+  "internalPath": "select.tsx",
+  "parents": []
+}
+[boundaries]: '@radix-ui/react-select' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/select.tsx",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "select.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@radix-ui/react-select/dist/index.mjs",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "@radix-ui/react-select",
+    "baseSource": "@radix-ui/react-select",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": []
+  }
+}
+[boundaries]: 'src/component/utils.ts' is of type 'component'
+[boundaries]: 
+{
+  "path": "src/component/utils.ts",
+  "type": "component",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/component",
+  "internalPath": "utils.ts",
+  "parents": []
+}
+[boundaries]: 'clsx' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/utils.ts",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "utils.ts",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/clsx/dist/clsx.mjs",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "clsx",
+    "baseSource": "clsx",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "clsx",
+      "ClassValue"
+    ]
+  }
+}
+[boundaries]: 'tailwind-merge' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/component/utils.ts",
+    "type": "component",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/component",
+    "internalPath": "utils.ts",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/tailwind-merge/dist/bundle-cjs.js",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "tailwind-merge",
+    "baseSource": "tailwind-merge",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "twMerge"
+    ]
+  }
+}
+[boundaries]: 'src/composition/CustomEdge.tsx' is of type 'composition'
+[boundaries]: 
+{
+  "path": "src/composition/CustomEdge.tsx",
+  "type": "composition",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/composition",
+  "internalPath": "CustomEdge.tsx",
+  "parents": []
+}
+[boundaries]: 'src/composition/GraphSelector.tsx' is of type 'composition'
+[boundaries]: 
+{
+  "path": "src/composition/GraphSelector.tsx",
+  "type": "composition",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/composition",
+  "internalPath": "GraphSelector.tsx",
+  "parents": []
+}
+[boundaries]: 'src/component/command' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/composition/GraphSelector.tsx",
+    "type": "composition",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/composition",
+    "internalPath": "GraphSelector.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/component/command",
+    "source": "src/component/command",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "Command",
+      "CommandEmpty",
+      "CommandGroup",
+      "CommandInput",
+      "CommandItem",
+      "CommandList",
+      "CommandSeparator"
+    ]
+  }
+}
+[boundaries]: 'src/component/popover' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/composition/GraphSelector.tsx",
+    "type": "composition",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/composition",
+    "internalPath": "GraphSelector.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/component/popover",
+    "source": "src/component/popover",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "Popover",
+      "PopoverContent",
+      "PopoverTrigger"
+    ]
+  }
+}
+[boundaries]: 'src/composition/CustomNode.tsx' is of type 'composition'
+[boundaries]: 
+{
+  "path": "src/composition/CustomNode.tsx",
+  "type": "composition",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/composition",
+  "internalPath": "CustomNode.tsx",
+  "parents": []
+}
+[boundaries]: 'src/composition/NodeLayout.tsx' is of type 'composition'
+[boundaries]: 
+{
+  "path": "src/composition/NodeLayout.tsx",
+  "type": "composition",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/composition",
+  "internalPath": "NodeLayout.tsx",
+  "parents": []
+}
+[boundaries]: 'src/app/App' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/composition/NodeLayout.tsx",
+    "type": "composition",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/composition",
+    "internalPath": "NodeLayout.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/app/App",
+    "source": "src/app/App",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "RenderedNodeData"
+    ]
+  }
+}
+[boundaries]: 'elkjs/lib/elk.bundled.js' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/composition/NodeLayout.tsx",
+    "type": "composition",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/composition",
+    "internalPath": "NodeLayout.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/elkjs/lib/elk.bundled.js",
+    "elementPath": null,
+    "internalPath": "/lib/elk.bundled.js",
+    "source": "elkjs/lib/elk.bundled.js",
+    "baseSource": "elkjs",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": []
+  }
+}
+[boundaries]: 'src/composition/CustomNode' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/composition/NodeLayout.tsx",
+    "type": "composition",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/composition",
+    "internalPath": "NodeLayout.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/composition/CustomNode",
+    "source": "src/composition/CustomNode",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": []
+  }
+}
+[boundaries]: 'src/composition/CustomEdge' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/composition/NodeLayout.tsx",
+    "type": "composition",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/composition",
+    "internalPath": "NodeLayout.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": null,
+    "elementPath": null,
+    "internalPath": "/composition/CustomEdge",
+    "source": "src/composition/CustomEdge",
+    "baseSource": "src",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": []
+  }
+}
+[boundaries]: 'src/main.tsx' is of unknown type
+[boundaries]: 
+{
+  "path": "src/main.tsx",
+  "elementPath": null,
+  "internalPath": null,
+  "source": null,
+  "baseSource": null,
+  "parents": null,
+  "type": null,
+  "category": null,
+  "captured": null,
+  "origin": null,
+  "isIgnored": true,
+  "isUnknown": true
+}
+[boundaries]: 'src/persistence/NodeCollection.tsx' is of type 'persistence'
+[boundaries]: 
+{
+  "path": "src/persistence/NodeCollection.tsx",
+  "type": "persistence",
+  "category": null,
+  "captured": null,
+  "origin": "local",
+  "isIgnored": false,
+  "isUnknown": false,
+  "elementPath": "src/persistence",
+  "internalPath": "NodeCollection.tsx",
+  "parents": []
+}
+[boundaries]: '@tanstack/rxdb-db-collection' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/persistence/NodeCollection.tsx",
+    "type": "persistence",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/persistence",
+    "internalPath": "NodeCollection.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/@tanstack/rxdb-db-collection/dist/esm/index.js",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "@tanstack/rxdb-db-collection",
+    "baseSource": "@tanstack/rxdb-db-collection",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "rxdbCollectionOptions"
+    ]
+  }
+}
+[boundaries]: 'zod' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/persistence/NodeCollection.tsx",
+    "type": "persistence",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/persistence",
+    "internalPath": "NodeCollection.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/zod/index.js",
+    "elementPath": null,
+    "internalPath": "",
+    "source": "zod",
+    "baseSource": "zod",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "z"
+    ]
+  }
+}
+[boundaries]: 'rxdb/plugins/core' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/persistence/NodeCollection.tsx",
+    "type": "persistence",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/persistence",
+    "internalPath": "NodeCollection.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/rxdb/plugins/core/index.mjs",
+    "elementPath": null,
+    "internalPath": "/plugins/core",
+    "source": "rxdb/plugins/core",
+    "baseSource": "rxdb",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "createRxDatabase",
+      "addRxPlugin"
+    ]
+  }
+}
+[boundaries]: 'rxdb/plugins/storage-dexie' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/persistence/NodeCollection.tsx",
+    "type": "persistence",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/persistence",
+    "internalPath": "NodeCollection.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/rxdb/plugins/storage-dexie/index.mjs",
+    "elementPath": null,
+    "internalPath": "/plugins/storage-dexie",
+    "source": "rxdb/plugins/storage-dexie",
+    "baseSource": "rxdb",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "getRxStorageDexie"
+    ]
+  }
+}
+[boundaries]: 'rxdb/plugins/validate-ajv' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/persistence/NodeCollection.tsx",
+    "type": "persistence",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/persistence",
+    "internalPath": "NodeCollection.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/rxdb/plugins/validate-ajv/index.mjs",
+    "elementPath": null,
+    "internalPath": "/plugins/validate-ajv",
+    "source": "rxdb/plugins/validate-ajv",
+    "baseSource": "rxdb",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "wrappedValidateAjvStorage"
+    ]
+  }
+}
+[boundaries]: 'rxdb/plugins/dev-mode' is of unknown type
+[boundaries]: 
+{
+  "from": {
+    "path": "src/persistence/NodeCollection.tsx",
+    "type": "persistence",
+    "category": null,
+    "captured": null,
+    "origin": "local",
+    "isIgnored": false,
+    "isUnknown": false,
+    "elementPath": "src/persistence",
+    "internalPath": "NodeCollection.tsx",
+    "parents": []
+  },
+  "to": {
+    "path": "node_modules/rxdb/plugins/dev-mode/index.mjs",
+    "elementPath": null,
+    "internalPath": "/plugins/dev-mode",
+    "source": "rxdb/plugins/dev-mode",
+    "baseSource": "rxdb",
+    "parents": null,
+    "type": null,
+    "category": null,
+    "captured": null,
+    "origin": "external",
+    "isIgnored": false,
+    "isUnknown": true
+  },
+  "dependency": {
+    "kind": "value",
+    "nodeKind": null,
+    "relationship": {
+      "from": null,
+      "to": null
+    },
+    "specifiers": [
+      "RxDBDevModePlugin"
+    ]
+  }
+}
+[boundaries]: 'src/vite-env.d.ts' is of unknown type
+[boundaries]: 
+{
+  "path": "src/vite-env.d.ts",
+  "elementPath": null,
+  "internalPath": null,
+  "source": null,
+  "baseSource": null,
+  "parents": null,
+  "type": null,
+  "category": null,
+  "captured": null,
+  "origin": null,
+  "isIgnored": true,
+  "isUnknown": true
+}
+[boundaries]: 'vite.config.ts' is of unknown type
+[boundaries]: 
+{
+  "path": "vite.config.ts",
+  "elementPath": null,
+  "internalPath": null,
+  "source": null,
+  "baseSource": null,
+  "parents": null,
+  "type": null,
+  "category": null,
+  "captured": null,
+  "origin": null,
+  "isIgnored": true,
+  "isUnknown": true
+}

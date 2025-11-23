@@ -2,16 +2,17 @@ import { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import {
   ReactFlow, Background, Node, Edge, Connection, OnConnectEnd,
   useReactFlow, applyEdgeChanges, EdgeChange,
-  reconnectEdge
+  reconnectEdge, EdgeProps
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useLiveQuery } from '@tanstack/react-db';
-import { getLayoutedElements, nodeTypes, edgeTypes } from './flow/NodeLayout';
-import { CustomNodeId, GraphId, nodeCollection } from './persistence/NodeCollection';
-import { GraphSelector } from '@/components/GraphSelector';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { getLayoutedElements, nodeTypes, edgeTypes } from 'src/composition/NodeLayout';
+import { CustomNodeId, GraphId, nodeCollection } from 'src/persistence/NodeCollection';
+import { GraphSelector } from 'src/composition/GraphSelector';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'src/component/dialog';
+import { Button } from 'src/component/button';
+import { Graph } from 'src/action/Graph';
 
 export interface RenderedNodeData extends Record<string, unknown> {
   label: string;
@@ -57,52 +58,22 @@ function Flow() {
 
   const rawData = useLiveQuery((q) => q.from({ nodes: nodeCollection })).data;
   const allGraphs = Array.from(new Set(rawData.map(it => it.graph)));
+
   const filteredRawData = useMemo(() => rawData.filter(node => node.graph === graph), [rawData, graph]);
-
-  // Helper function to get all ancestors of a node
-  const getAncestors = useCallback((nodeId: CustomNodeId, data: typeof filteredRawData): Set<CustomNodeId> => {
-    const ancestors = new Set<CustomNodeId>();
-    const toVisit = [nodeId];
-
-    while (toVisit.length > 0) {
-      const current = toVisit.pop()!;
-      const node = data.find(n => n.id === current);
-
-      if (node) {
-        node.parents.forEach(parentId => {
-          if (!ancestors.has(parentId)) {
-            ancestors.add(parentId);
-            toVisit.push(parentId);
-          }
-        });
-      }
-    }
-
-    return ancestors;
-  }, []);
-
-  // Helper function to get immediate children of a node
-  const getImmediateChildren = useCallback((nodeId: CustomNodeId, data: typeof filteredRawData): Set<CustomNodeId> => {
-    return new Set(
-      data
-        .filter(node => node.parents.includes(nodeId))
-        .map(node => node.id)
-    );
-  }, []);
 
   // Filter data based on promoted node
   const visibleRawData = useMemo(() => {
     if (!promotedNodeId) return filteredRawData;
 
-    const ancestors = getAncestors(promotedNodeId, filteredRawData);
-    const immediateChildren = getImmediateChildren(promotedNodeId, filteredRawData);
+    const ancestors = Graph.getAncestors(promotedNodeId, filteredRawData);
+    const immediateChildren = Graph.getImmediateChildren(promotedNodeId, filteredRawData);
 
     return filteredRawData.filter(node =>
       node.id === promotedNodeId ||
       ancestors.has(node.id) ||
       immediateChildren.has(node.id)
     );
-  }, [filteredRawData, promotedNodeId, getAncestors, getImmediateChildren]);
+  }, [filteredRawData, promotedNodeId]);
 
   const nodeData: Node<RenderedNodeData>[] = useMemo(() =>
     visibleRawData.map((node): Node<RenderedNodeData> => ({
@@ -164,80 +135,10 @@ function Flow() {
 
   const newNodeLabel = (input: CustomNodeId) => `Node ${input.slice(0, 4)}`;
 
-  const handleAddNode = (target: CustomNodeId, direction: 'before' | 'after') => {
-    const newNodeId = crypto.randomUUID() as CustomNodeId;
 
-    switch (direction) {
-      case 'before':
-        nodeCollection.insert({
-          id: newNodeId,
-          label: newNodeLabel(newNodeId),
-          parents: [],
-          isNew: true,
-          graph: graph
-        });
-
-        // Update the existing node to add the new node as a parent
-        nodeCollection.update(target, (node) => { node.parents = [newNodeId, ...node.parents] });
-        break;
-      case 'after':
-        nodeCollection.insert({
-          id: newNodeId,
-          label: newNodeLabel(newNodeId),
-          parents: [target],
-          isNew: true,
-          graph: graph
-        });
-        break;
-    }
-  }
-
-  const handleInsertNode = (sourceId: CustomNodeId, targetId: CustomNodeId) => {
-    const newNodeId = crypto.randomUUID() as CustomNodeId;
-
-    // Create the new node with the source as its parent
-    nodeCollection.insert({
-      id: newNodeId,
-      label: newNodeLabel(newNodeId),
-      parents: [sourceId],
-      isNew: true,
-      graph: graph
-    });
-
-    // Update the target to replace the source with the new node
-    nodeCollection.update(targetId, (node) => {
-      node.parents = node.parents.map(parentId =>
-        parentId === sourceId ? newNodeId : parentId
-      );
-    });
-  }
-
-  const handleDeleteNode = (nodeId: CustomNodeId) => {
-    const nodeToDelete = filteredRawData.find(n => n.id === nodeId);
-    if (!nodeToDelete) return;
-
-    const parents = nodeToDelete.parents;
-    const children = filteredRawData.filter(n => n.parents.includes(nodeId));
-
-    // If the node has both parents and children, link parents to all children
-    if (parents.length > 0 && children.length > 0) {
-      children.forEach(child => {
-        nodeCollection.update(child.id, (node) => {
-          node.parents = node.parents.filter(p => p !== nodeId).concat(parents);
-        });
-      });
-    } else if (children.length > 0) {
-      // If node has children but no parents, remove this node from children's parent list
-      children.forEach(child => {
-        nodeCollection.update(child.id, (node) => {
-          node.parents = node.parents.filter(p => p !== nodeId);
-        });
-      });
-    }
-
-    // Delete the node
-    nodeCollection.delete(nodeId);
-  }
+  const handleInsertNode = useCallback((sourceId: CustomNodeId, targetId: CustomNodeId) => {
+    Graph.insertNode(sourceId, targetId, graph, newNodeLabel);
+  }, [graph]);
 
   const onConnect =
     (params: Connection) => {
@@ -288,8 +189,12 @@ function Flow() {
     ...node,
     data: {
       ...node.data,
-      onAddNode: handleAddNode,
-      onDeleteNode: handleDeleteNode,
+      onAddNode: (target: CustomNodeId, direction: 'before' | 'after') => {
+        Graph.addNode(target, direction, graph, newNodeLabel);
+      },
+      onDeleteNode: (nodeId: CustomNodeId) => {
+        Graph.deleteNode(nodeId, filteredRawData);
+      },
       onPromoteNode: handlePromoteNode,
       onUnpromoteNode: handleUnpromoteNode,
     },
@@ -324,7 +229,7 @@ function Flow() {
 
   const edgeTypesWithCallbacks = useMemo(
     () => ({
-      custom: (props: any) => <edgeTypes.custom {...props} onInsertNode={handleInsertNode} />,
+      custom: (props: EdgeProps) => <edgeTypes.custom {...props} onInsertNode={handleInsertNode} />,
     }),
     [handleInsertNode]
   );

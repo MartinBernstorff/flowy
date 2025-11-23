@@ -1,8 +1,8 @@
 import { Node, Edge } from '@xyflow/react';
-import { RenderedNodeData } from '../App';
+import { RenderedNodeData } from 'src/app/App';
 import ELK from 'elkjs/lib/elk.bundled.js';
-import CustomNode from '../CustomNode';
-import CustomEdge from './CustomEdge';
+import CustomNode from 'src/composition/CustomNode';
+import CustomEdge from 'src/composition/CustomEdge';
 
 export const elk = new ELK();
 
