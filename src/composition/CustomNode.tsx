@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Handle, Position, useConnection } from '@xyflow/react';
 import { CustomNodeId } from "../core/Node";
 import { Graph } from '../action/GraphActions';
-import { FlowyNodeData } from 'src/app/App';
 
 interface CustomNodeProps {
     id: string;
@@ -13,7 +12,7 @@ interface CustomNodeProps {
     onUnpromoteNode: () => void;
 }
 
-export default function CustomNode({ id, data }: CustomNodeProps) {
+export default function CustomNode({ id, data, onAddNode, onDeleteNode, onPromoteNode }: CustomNodeProps) {
     const customNodeId = id as CustomNodeId;
     const connection = useConnection();
     const [isHovered, setIsHovered] = useState(false);
@@ -96,16 +95,15 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
             switch (key) {
                 case 'a':
                 case 'b': {
-                    if (!data.onAddNode) return;
                     const direction = key === 'a' ? 'after' : 'before';
-                    data.onAddNode(customNodeId, direction);
+                    onAddNode(customNodeId, direction);
                     break;
                 }
                 case 'd':
-                    data.onDeleteNode(customNodeId);
+                    onDeleteNode(customNodeId);
                     break;
                 case 'w':
-                    data.onPromoteNode(customNodeId);
+                    onPromoteNode(customNodeId);
                     break;
                 case 'e':
                     event.preventDefault();
@@ -116,7 +114,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isHovered, customNodeId, data, isEditing]);
+    }, [isHovered, customNodeId, data, isEditing, onDeleteNode, onPromoteNode, onAddNode]);
 
     const fieldClasses = "border-none outline-none bg-transparent text-center wrap-break-word w-full h-full resize-none text-black overflow-hidden text-sm";
 
@@ -172,4 +170,9 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
             )}
         </div>
     );
+} export interface FlowyNodeData extends Record<string, unknown> {
+    label: string;
+    isNew: boolean;
+    isPromoted: boolean;
 }
+

@@ -13,12 +13,7 @@ import { CustomNodeId, GraphId } from "../core/Node";
 import { GraphSelector } from '../composition/GraphSelector';
 import { NewGraphDialog } from '../composition/NewGraphDialog';
 import { Graph } from '../action/GraphActions';
-
-export interface FlowyNodeData extends Record<string, unknown> {
-  label: string;
-  isNew: boolean;
-  isPromoted: boolean;
-}
+import { FlowyNodeData } from 'src/composition/CustomNode';
 
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -176,23 +171,15 @@ function Flow() {
     setPromotedNodeId(nodeId);
   }, []);
 
-  const handleUnpromoteNode = useCallback(() => {
-    setPromotedNodeId(null);
-  }, []);
-
   const nodesWithCallbacks = nodes.map(node => ({
     ...node,
-    data: {
-      ...node.data,
-      onAddNode: (target: CustomNodeId, direction: 'before' | 'after') => {
-        Graph.addNode(target, direction, graph, newNodeLabel);
-      },
-      onDeleteNode: (nodeId: CustomNodeId) => {
-        Graph.deleteNode(nodeId, filteredRawData);
-      },
-      onPromoteNode: handlePromoteNode,
-      onUnpromoteNode: handleUnpromoteNode,
+    onAddNode: (target: CustomNodeId, direction: 'before' | 'after') => {
+      Graph.addNode(target, direction, graph, newNodeLabel);
     },
+    onDeleteNode: (nodeId: CustomNodeId) => {
+      Graph.deleteNode(nodeId, filteredRawData);
+    },
+    onPromoteNode: handlePromoteNode,
   }))
 
   const handleSelectedGraphChange = (value: string) => {
@@ -236,8 +223,8 @@ function Flow() {
         nodeTypes={nodeTypes}
         edges={edges}
         edgeTypes={edgeTypesWithCallbacks}
-        onEdgesChange={onEdgesChange}
         defaultEdgeOptions={{ type: 'custom' }}
+        onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onReconnect={onReconnect}
         onConnectEnd={onConnectEnd}
