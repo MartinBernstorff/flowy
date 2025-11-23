@@ -73,6 +73,10 @@ export const Graph = {
         }
     },
 
+    getNode: (nodeId: CustomNodeId): CustomNode | undefined => {
+        return nodeCollection.get(nodeId);
+    },
+
     /**
      * Insert a new node between a source and target node
      */
