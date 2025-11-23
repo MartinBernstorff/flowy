@@ -8,6 +8,17 @@ import prettier from 'eslint-plugin-prettier'
 import typescriptParser from '@typescript-eslint/parser'
 import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin"
 
+const ELEM = {
+  action: "action",
+  all: "*",
+  app: "app",
+  component: "component",
+  composition: "composition",
+  core: "core",
+  page: "page",
+  persistence: "persistence",
+}
+
 export default tseslint.config(
   { ignores: ['dist'] },
   {
@@ -23,22 +34,18 @@ export default tseslint.config(
       "boundaries/element-types": [2, {
         default: "disallow",
         rules: [
-          { from: "action", allow: ["persistence"] },
+          { from: ELEM.action, allow: [ELEM.persistence] },
           {
-            from: "app", allow: [
-              "action",
-              "composition",
-              "persistence"
-            ]
+            from: ELEM.app, allow: [ELEM.page]
           },
           {
-            from: "composition", allow: [
-              "action",
-              "component",
+            from: ELEM.composition, allow: [
+              ELEM.action,
+              ELEM.component,
             ]
           },
-          { from: "page", allow: ["composition", "persistence"] },
-          { from: "*", allow: ["core"] }, // core can be used by any layer
+          { from: ELEM.component, allow: [ELEM.composition, ELEM.action, ELEM.persistence] },
+          { from: ELEM.all, allow: [ELEM.core] }, // core can be used by any layer
         ]
       }],
       "boundaries/no-private": [2],
@@ -52,13 +59,13 @@ export default tseslint.config(
     },
     settings: {
       "boundaries/elements": [
-        { type: "action", pattern: "action/**" },
-        { type: "app", pattern: "app/**" },
-        { type: "component", pattern: "component/**" },
-        { type: "composition", pattern: "composition/**" },
-        { type: "core", pattern: "core/**" },
-        { type: "page", pattern: "page/**" },
-        { type: "persistence", pattern: "persistence/**" },
+        { type: ELEM.action, pattern: "action/**" },
+        { type: ELEM.app, pattern: "app/**" },
+        { type: ELEM.component, pattern: "component/**" },
+        { type: ELEM.composition, pattern: "composition/**" },
+        { type: ELEM.core, pattern: "core/**" },
+        { type: ELEM.page, pattern: "page/**" },
+        { type: ELEM.persistence, pattern: "persistence/**" },
       ],
       "boundaries/include": ["src/**"],
       "boundaries/ignore": ["**/vite-env.d.ts", "src/main.tsx"],
