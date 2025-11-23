@@ -2,23 +2,19 @@ import { useState, useEffect, useRef } from 'react';
 import { Handle, Position, useConnection } from '@xyflow/react';
 import { CustomNodeId } from "../core/Node";
 import { Graph } from '../action/GraphActions';
+import { FlowyNodeData } from 'src/app/App';
 
-interface CustomNodeData extends Record<string, unknown> {
-    label: string;
-    isNew: boolean;
-    isPromoted: boolean;
+interface CustomNodeProps {
+    id: string;
+    data: FlowyNodeData;
     onAddNode: (nodeId: string, direction: 'before' | 'after') => void;
     onDeleteNode: (nodeId: string) => void;
     onPromoteNode: (nodeId: string) => void;
     onUnpromoteNode: () => void;
 }
 
-interface CustomNodeProps {
-    id: CustomNodeId;
-    data: CustomNodeData;
-}
-
 export default function CustomNode({ id, data }: CustomNodeProps) {
+    const customNodeId = id as CustomNodeId;
     const connection = useConnection();
     const [isHovered, setIsHovered] = useState(false);
     const [isEditing, setIsEditing] = useState(data.isNew || false);
@@ -26,7 +22,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
     const nodeRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const isTarget = connection.inProgress && connection.fromNode.id !== id;
+    const isTarget = connection.inProgress && connection.fromNode.id !== customNodeId;
 
     // Auto-enter edit mode for new nodes
     useEffect(() => {
@@ -53,7 +49,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
         switch (event.key) {
             case 'Enter':
                 event.preventDefault();
-                Graph.updateNode(id, {
+                Graph.updateNode(customNodeId, {
                     label: editedLabel,
                     isNew: false
                 });
@@ -65,7 +61,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                 setEditedLabel(data.label);
 
                 if (data.isNew) {
-                    Graph.updateNode(id, {
+                    Graph.updateNode(customNodeId, {
                         isNew: false
                     });
                 }
@@ -75,7 +71,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
     };
 
     const handleBlur = () => {
-        Graph.updateNode(id,
+        Graph.updateNode(customNodeId,
             {
                 label: editedLabel,
                 isNew: false
@@ -102,16 +98,14 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
                 case 'b': {
                     if (!data.onAddNode) return;
                     const direction = key === 'a' ? 'after' : 'before';
-                    data.onAddNode(id, direction);
+                    data.onAddNode(customNodeId, direction);
                     break;
                 }
                 case 'd':
-                    if (data.onDeleteNode) {
-                        data.onDeleteNode(id);
-                    }
+                    data.onDeleteNode(customNodeId);
                     break;
                 case 'w':
-                    data.onPromoteNode(id);
+                    data.onPromoteNode(customNodeId);
                     break;
                 case 'e':
                     event.preventDefault();
@@ -122,7 +116,7 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isHovered, id, data, isEditing]);
+    }, [isHovered, customNodeId, data, isEditing]);
 
     const fieldClasses = "border-none outline-none bg-transparent text-center wrap-break-word w-full h-full resize-none text-black overflow-hidden text-sm";
 

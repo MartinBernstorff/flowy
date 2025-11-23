@@ -7,12 +7,18 @@ import {
 import '@xyflow/react/dist/style.css';
 import { ReactFlowProvider } from '@xyflow/react';
 import { useLiveQuery } from '@tanstack/react-db';
-import { getLayoutedElements, nodeTypes, edgeTypes, RenderedNodeData } from '../composition/NodeLayout';
+import { getLayoutedElements, nodeTypes, edgeTypes } from '../composition/NodeLayout';
 import { nodeCollection } from '../persistence/NodeCollection';
 import { CustomNodeId, GraphId } from "../core/Node";
 import { GraphSelector } from '../composition/GraphSelector';
 import { NewGraphDialog } from '../composition/NewGraphDialog';
 import { Graph } from '../action/GraphActions';
+
+export interface FlowyNodeData extends Record<string, unknown> {
+  label: string;
+  isNew: boolean;
+  isPromoted: boolean;
+}
 
 function Flow() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -65,8 +71,8 @@ function Flow() {
     );
   }, [filteredRawData, promotedNodeId]);
 
-  const nodeData: Node<RenderedNodeData>[] = useMemo(() =>
-    visibleRawData.map((node): Node<RenderedNodeData> => ({
+  const nodeData: Node<FlowyNodeData>[] = useMemo(() =>
+    visibleRawData.map((node) => ({
       id: node.id,
       position: { x: 0, y: 0 }, // Initial position is 0, so the layout algorithm can position it
       data: {
@@ -88,7 +94,7 @@ function Flow() {
     )
     , [visibleRawData]);
 
-  const [nodes, setNodes] = useState<Node<RenderedNodeData>[]>([]);
+  const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
 
   const onReconnect = useCallback(

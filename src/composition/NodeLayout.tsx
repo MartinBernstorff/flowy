@@ -2,15 +2,15 @@ import { Node, Edge } from '@xyflow/react';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import CustomNode from '../composition/CustomNode';
 import CustomEdge from '../composition/CustomEdge';
+import { FlowyNodeData } from 'src/app/App';
 
 export const elk = new ELK();
 
-export async function getLayoutedElements(nodes: Node<RenderedNodeData>[], edges: Edge[]): Promise<{ nodes: Node<RenderedNodeData>[]; edges: Edge[]; }> {
+export async function getLayoutedElements(nodes: Node<FlowyNodeData>[], edges: Edge[]): Promise<{ nodes: Node<FlowyNodeData>[]; edges: Edge[]; }> {
   const nodeIds = new Set(nodes.map(node => node.id));
 
   // Filter out edges that don't have both valid source and target nodes
-  const validEdges = edges.filter(edge => nodeIds.has(edge.source) && nodeIds.has(edge.target)
-  );
+  const validEdges = edges.filter(edge => nodeIds.has(edge.source) && nodeIds.has(edge.target));
 
   const graph = {
     id: 'root',
@@ -31,13 +31,11 @@ export async function getLayoutedElements(nodes: Node<RenderedNodeData>[], edges
   try {
     const layoutedGraph = await elk.layout(graph);
     return {
+      // XXX: Throw an error if children is empty?
       nodes: (layoutedGraph.children || []).map((node) => ({
         ...node,
-        // React Flow expects a position property on the node instead of `x`
-        // and `y` fields.
         position: { x: node.x || 0, y: node.y || 0 },
-      })) as Node<RenderedNodeData>[],
-
+      })),
       edges: validEdges,
     };
   } catch (error) {
@@ -66,12 +64,4 @@ export const edgeTypes = {
   custom: CustomEdge,
 };
 
-export interface RenderedNodeData extends Record<string, unknown> {
-  label: string;
-  isNew?: boolean;
-  isPromoted?: boolean;
-  onAddNode?: (nodeId: string, direction: 'before' | 'after') => void;
-  onPromoteNode?: (nodeId: string) => void;
-  onUnpromoteNode?: () => void;
-}
 
