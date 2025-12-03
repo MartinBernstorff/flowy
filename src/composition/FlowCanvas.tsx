@@ -78,7 +78,8 @@ export function FlowCanvas({
             data: {
                 label: node.label,
                 isNew: node.isNew,
-                isPromoted: node.id === promotedNodeId
+                isPromoted: node.id === promotedNodeId,
+                hasParents: node.parents.length > 0
             },
             type: 'custom',
         }))
@@ -136,7 +137,13 @@ export function FlowCanvas({
             if (change.type === 'remove') {
                 const edgeToRemove = edges.find(e => e.id === change.id);
                 if (edgeToRemove) {
-                    // Edge removal is handled by parent component through data updates
+                    const targetNode = NodeActions.getNode(edgeToRemove.target as CustomNodeId)!;
+                    NodeActions.updateNode(
+                        targetNode.id,
+                        {
+                            parents: targetNode.parents.filter(parentId => parentId !== edgeToRemove.source)
+                        }
+                    );
                 }
             }
         });

@@ -122,6 +122,9 @@ export default function CustomNode({ id, data }: CustomNodeProps) {
         if (isHovered) {
             return 'border-2 border-black bg-gray-200';
         }
+        if (!data.hasParents) {
+            return 'border-2 border-gray-600 bg-white';
+        }
         return 'border-2 border-gray-300 bg-white';
     };
 
@@ -180,6 +183,7 @@ export interface FlowyNodeData extends Record<string, unknown> {
     label: string;
     isNew: boolean;
     isPromoted: boolean;
+    hasParents: boolean;
 }
 
 export interface FlowyRenderableNode extends FlowyNodeData {

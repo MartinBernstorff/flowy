@@ -1,11 +1,11 @@
 import { useLiveQuery } from '@tanstack/react-db';
 import { useRef, useState, useEffect, useMemo } from 'react';
-import { NodeActions } from 'src/action/NodeActions';
-import { FlowCanvas } from 'src/composition/FlowCanvas';
-import { GraphSelector } from 'src/composition/GraphSelector';
-import { NewGraphDialog } from 'src/composition/NewGraphDialog';
-import { GraphId } from 'src/core/Node';
-import { nodeCollection } from 'src/persistence/NodeCollection';
+import { NodeActions } from '@/action/NodeActions';
+import { FlowCanvas } from '@/composition/FlowCanvas';
+import { GraphSelector } from '@/composition/GraphSelector';
+import { NewGraphDialog } from '@/composition/NewGraphDialog';
+import { GraphId } from '@/core/Node';
+import { nodeCollection } from '@/persistence/NodeCollection';
 
 export function Main() {
     const selectTriggerRef = useRef<HTMLButtonElement>(null);
