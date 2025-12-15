@@ -32,6 +32,11 @@ jobs:
                   node-version: 20
                   cache: "npm"
 
+            - name: Add pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+
             # Step 4: Package Electron (non-tagged commits)
             - name: Package Electron
               if: ${{ steps.regex-match.outputs.match == '' }}
