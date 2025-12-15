@@ -70,11 +70,6 @@
     "directories": {
       "output": "release"
     },
-    "windows": {
-      "target": [
-        "dir"
-      ]
-    },
     "mac": {
       "target": [
         "dir"

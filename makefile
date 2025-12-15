@@ -12,3 +12,7 @@ deploy:
 validate:
 	bun tsc
 	bun lint
+
+publish:
+	npm install
+	
