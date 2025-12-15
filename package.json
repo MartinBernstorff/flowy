@@ -71,9 +71,13 @@
       "output": "release"
     },
     "mac": {
-      "target": [
-        "dir"
-      ]
-    }
+      "target": "dir"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "win": {
+      "target": "nsis"
+    },
   }
 }
